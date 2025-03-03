@@ -1,0 +1,14 @@
+{
+    "host": "localhost",
+    "user": "root",
+    "database": "sta_cruz",
+    "password": "",
+    "JWT_SECRET": "mysecretkey123",
+    "EMAIL_HOST": "smtp.gmail.com",
+    "EMAIL_PORT": "587",
+    "EMAIL_USER": "stacruz115@gmail.com",
+    "EMAIL_PASS": "htfp qhlh vxep eypb",
+    "PAYMONGO_API_KEY": "pk_test_Z43FGWjRzA9PZKzHudcaL3Yc",
+    "PAYMONGO_API_URL": "https://api.paymongo.com/v1/",
+    "PAYMONGO_SECRET_KEY": "sk_test_sxwmM4tDkWBMm1uy31WV8HEB"
+}
