@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreatePaymentRepository = void 0;
 const axios_1 = __importDefault(require("axios"));
-const config_json_1 = __importDefault(require("../../config/config.json"));
 class CreatePaymentRepository {
     static createPaymentMethod(cardDetails) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -46,7 +45,7 @@ class CreatePaymentRepository {
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
-                        "Authorization": `Basic ${config_json_1.default.PAYMONGO_SECRET_KEY}`
+                        "Authorization": `Basic ${process.env.PAYMONGO_SECRET_KEY}`
                     }
                 });
                 return response.data;

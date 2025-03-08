@@ -52,7 +52,7 @@ const userService = __importStar(require("../../services/UserService/userService
 //Define routes on every role
 const roleRoutes = {
     1: '/submain/dashboard',
-    2: '/owner/dashboard',
+    2: '/admin/dashboard',
     3: '/principal/dashboard',
     4: '/principal/dashboard',
     5: '/registrar/dashboard',

@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 
@@ -14,37 +15,44 @@
   <app-side-bar></app-side-bar>
 
   <!-- Main Content -->
-  <div class="ml-64 p-8 pt-16 h-[calc(100vh-8rem)] overflow-auto">
+  <div class="ml-64 p-8 pt-16 h-[calc(100vh-8rem)] justify-between overflow-auto">
     <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-white p-6 rounded shadow-lg flex items-center">
-        <img src="assets/src/img/dashboard/images/admin.png" alt="Administrators" class="w-16 h-16 mr-4 rounded-lg">
-        <div>
-          <h3 class="text-xl font-semibold">Report Card</h3>
-          <a href="#" class="text-blue-500 hover:underline">View Details</a>
+    <div class="flex flex-col lg:flex-row gap-4 justify-between" style="height: 400px;">
+        <div class="bg-white rounded flex flex-col shadow-lg items-center" style="width: 300px;">
+            <div class="mb-5 mt-3">
+              <h2 class="text-2xl justify-center font-semibold">Total Users</h2>
+            </div>
+            <br>
+            <div class="mt-5">
+                <h1 class="text-9xl font-semibold">20</h1>
+            </div>
+            <div class="p-10 text-7xl text-black">
+              <i class="fa-solid fa-users text-blue-600"></i>
+            </div>
         </div>
-      </div>
-      <div class="bg-white p-6 rounded shadow-lg flex items-center">
-        <img src="assets/src/img/dashboard/images/staff.png" alt="Staff" class="w-16 h-16 mr-4 rounded-lg">
-        <div>
-          <h3 class="text-xl font-semibold">Deportment Grade Monitoring</h3>
-          <a href="#" class="text-blue-500 hover:underline">View Details</a>
+        <div class="bg-white rounded flex flex-col shadow-lg text-center items-center" style="width: 300px;">
+            <div class="mb-5 mt-3">
+              <h2 class="text-2xl justify-center font-semibold">Total Registered <br> Students</h2>
+            </div>
+            <div class="mt-5">
+                <h1 class="text-9xl font-semibold">20</h1>
+            </div>
+            <div class="p-10 text-7xl text-black">
+              <i class="fa-solid fa-user-graduate text-blue-600"></i>
+            </div>
         </div>
-      </div>
-      <div class="bg-white p-6 rounded shadow-lg flex items-center">
-        <img src="assets/src/img/dashboard/images/registrar.png" alt="Registrar" class="w-16 h-16 mr-4 rounded-lg">
-        <div>
-          <h3 class="text-xl font-semibold">Deportment Summary</h3>
-          <a href="#" class="text-blue-500 hover:underline">View Details</a>
+        <div class="bg-white rounded flex flex-col shadow-lg items-center" style="width: 300px;">
+          <div class="mb-5 mt-3">
+            <h2 class="text-2xl justify-center font-semibold">Total Roles</h2>
+          </div>
+          <br>
+            <div class="mt-5">
+                <h1 class="text-9xl font-semibold">20</h1>
+            </div>
+            <div class="p-10 text-7xl text-black">
+              <i class="fa fa-user-tie text-blue-600 " aria-hidden="true"></i>
+            </div>
         </div>
-      </div>
-      <div class="bg-white p-6 rounded shadow-lg flex items-center">
-        <img src="assets/src/img/dashboard/images/scheduler.png" alt="Scheduler" class="w-16 h-16 mr-4 rounded-lg">
-        <div>
-          <h3 class="text-xl font-semibold">User Credentials</h3>
-          <a href="#" class="text-blue-500 hover:underline">View Details</a>
-        </div>
-      </div>
     </div>
   </div>
 

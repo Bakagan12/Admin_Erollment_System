@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
   private getRedirectPath(roleId: number): string {
     switch (roleId) {
       case 1: return 'admin';
-      case 2: return 'owner';
+      case 2: return 'admin';
       case 3: return 'principal';
       case 4: return 'principal';
       case 5: return 'registrar';

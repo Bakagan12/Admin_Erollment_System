@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {AuthService} from '../../../../../service/auth/auth.service'
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 @Component({
@@ -8,8 +9,10 @@ import { Router } from '@angular/router';
   templateUrl: './side-bar.component.html',
 })
 export class SideBarComponent {
-  constructor(private router: Router) {}
-
+constructor (private authService: AuthService, private router: Router){}
+  logout(): void{
+    this.authService.logout();
+  }
   goToUserRoles() {
     this.router.navigate(['/admin/dashboard/user/role']);
   }

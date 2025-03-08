@@ -65,7 +65,7 @@ app.use((req, res, next) => {
 // Define the routes
 app.use('/auth', authRoutes_1.default);
 app.use('/register', (0, roleAuth_1.roleAuth)([1]), allUserRoute_1.default); // Only Admin can access
-app.use('/admin', (0, roleAuth_1.roleAuth)([1]), selectUserRoute_1.default); // Only Admin and Owner can access
+app.use('/admin', (0, roleAuth_1.roleAuth)([1, 2]), selectUserRoute_1.default); // Only Admin and Owner can access
 app.use('/principal', (0, roleAuth_1.roleAuth)([3, 4]), termRoute_1.default);
 app.use('/api', paymentRoute_1.default);
 app.use('/payment', createPaymentRoutes_1.default);

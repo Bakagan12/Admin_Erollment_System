@@ -14,8 +14,8 @@ export class HeaderComponent {
   logout(): void{
     this.authService.logout();
   }
-goToDashboard() {
-  this.router.navigate(['/submain/dashboard']);
-}
+// goToDashboard() {
+//   this.router.navigate(['/submain/dashboard']);
+// }
 
 }

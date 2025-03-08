@@ -15,7 +15,7 @@ export class RoleGuard implements CanActivate {
     // Define the role-to-route mapping
     const roleRoutes: { [key: number]: string } = {
       1: '/submain/dashboard',
-      2: '/owner/dashboard',
+      2: '/admin/dashboard',
       3: '/principal/dashboard',
       4: '/principal/dashboard',
       5: '/registrar/dashboard',
