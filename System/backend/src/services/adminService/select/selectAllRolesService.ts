@@ -1,4 +1,4 @@
-import { selectRoles } from "../../../repository/adminRepository/select/selectRolesRepo";
+import { selectRoles } from "../../../repository/adminRepository/select/selectAllRolesRepo";
 
 export const getRoles = async (): Promise<any[]> => {
     try {

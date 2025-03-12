@@ -8,16 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoles = void 0;
-const selectAllRolesRepo_1 = require("../../../repository/adminRepository/select/selectAllRolesRepo");
-const getRoles = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const roles = yield selectAllRolesRepo_1.selectRoles.getRoles();
-        return roles;
+exports.selectRoles = void 0;
+const db_1 = __importDefault(require("../../../config/db"));
+class selectRoles {
+    static getRoles() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, db_1.default)('user_roles').select('role_name', 'is_active').where('is_active', '=', 1);
+        });
     }
-    catch (err) {
-        throw new Error('Error fetching roles: ' + err.message);
-    }
-});
-exports.getRoles = getRoles;
+}
+exports.selectRoles = selectRoles;

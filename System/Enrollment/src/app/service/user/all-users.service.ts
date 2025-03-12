@@ -7,15 +7,13 @@ import { AuthService } from '../auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserRoleService {
-
-  private apiUrl = environment.apiUrl + '/user/allRoles';
-
+export class AllUsersService {
+  private apiUrl = environment.apiUrl + '/all_user/get_all_user';
   constructor(private http: HttpClient, private auth: AuthService) { }
 
-  getAllRoles(): Observable<any> {
+  getAllUsers(): Observable<any> {
     const token = this.auth.getToken();
-    console.log('User Role Token:' + token);
+    console.log('All User Token:' + token);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(`${this.apiUrl}`, { headers });
   }

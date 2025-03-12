@@ -13,19 +13,28 @@ import emailRoute from './routes/emailRoute/emailRoute';
 import paymentRoute from './routes/requestsRoute/paymentRoute'
 import createPaymentRoute from './routes/requestsRoute/createPaymentRoutes';
 import roles from './routes/adminRoute/allRole/allRole';
+import fetchallUser from './routes/adminRoute/allUserRoute/allUserRoutes';
+import Student from './routes/adminRoute/allStudentRoute/allStudentRoute';
+
 dotenv.config();
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 // CORS middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use(((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    // Handle OPTIONS method (preflight request)
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     next();
-});
+}) as express.RequestHandler);
 
 // Define the routes
 app.use('/auth', authRoutes);
@@ -33,6 +42,8 @@ app.use('/register', roleAuth([1]), departmentalUsers);  // Only Admin can acces
 
 app.use('/admin', roleAuth([1,2]), selectUserRoute);     // Only Admin and Owner can access
 app.use('/user', roles);     // Only Admin and Owner can access
+app.use('/all_user', fetchallUser);     // Only Admin and Owner can access
+app.use('/all_student', Student);     // Only Admin and Owner can access
 
 app.use('/principal', roleAuth([3, 4]), termRoute);
 

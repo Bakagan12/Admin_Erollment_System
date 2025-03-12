@@ -9,15 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoles = void 0;
-const selectAllRolesRepo_1 = require("../../../repository/adminRepository/select/selectAllRolesRepo");
-const getRoles = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.getAllUsers = void 0;
+const selectAllUsersRepo_1 = require("../../../repository/adminRepository/select/selectAllUsersRepo");
+const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const roles = yield selectAllRolesRepo_1.selectRoles.getRoles();
-        return roles;
+        const users = yield selectAllUsersRepo_1.selectAllUsers.getAllUsers();
+        return users;
     }
     catch (err) {
-        throw new Error('Error fetching roles: ' + err.message);
+        throw new Error('Error fetching users: ' + err.message);
     }
 });
-exports.getRoles = getRoles;
+exports.getAllUsers = getAllUsers;

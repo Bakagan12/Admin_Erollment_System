@@ -43,7 +43,6 @@ Object.defineProperty(exports, "testDbConnection", { enumerable: true, get: func
 const errorController = __importStar(require("./controllers/error/error"));
 const roleAuth_1 = require("./middleware/roleAuth");
 const dotenv_1 = __importDefault(require("dotenv"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const authRoutes_1 = __importDefault(require("./routes/authRoute/authRoutes"));
 const allUserRoute_1 = __importDefault(require("./routes/adminRoute/allUser/allUserRoute"));
 const selectUserRoute_1 = __importDefault(require("./routes/adminRoute/selectRoute/selectUserRoute"));
@@ -52,22 +51,30 @@ const emailRoute_1 = __importDefault(require("./routes/emailRoute/emailRoute"));
 const paymentRoute_1 = __importDefault(require("./routes/requestsRoute/paymentRoute"));
 const createPaymentRoutes_1 = __importDefault(require("./routes/requestsRoute/createPaymentRoutes"));
 const allRole_1 = __importDefault(require("./routes/adminRoute/allRole/allRole"));
+const allUserRoutes_1 = __importDefault(require("./routes/adminRoute/allUserRoute/allUserRoutes"));
+const allStudentRoute_1 = __importDefault(require("./routes/adminRoute/allStudentRoute/allStudentRoute"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
-app.use(body_parser_1.default.json());
+app.use(express_1.default.json());
 // CORS middleware
-app.use((req, res, next) => {
+app.use(((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    // Handle OPTIONS method (preflight request)
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
     next();
-});
+}));
 // Define the routes
 app.use('/auth', authRoutes_1.default);
 app.use('/register', (0, roleAuth_1.roleAuth)([1]), allUserRoute_1.default); // Only Admin can access
 app.use('/admin', (0, roleAuth_1.roleAuth)([1, 2]), selectUserRoute_1.default); // Only Admin and Owner can access
 app.use('/user', allRole_1.default); // Only Admin and Owner can access
+app.use('/all_user', allUserRoutes_1.default); // Only Admin and Owner can access
+app.use('/all_student', allStudentRoute_1.default); // Only Admin and Owner can access
 app.use('/principal', (0, roleAuth_1.roleAuth)([3, 4]), termRoute_1.default);
 app.use('/api', paymentRoute_1.default);
 app.use('/payment', createPaymentRoutes_1.default);

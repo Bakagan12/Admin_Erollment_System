@@ -9,15 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoles = void 0;
-const selectAllRolesRepo_1 = require("../../../repository/adminRepository/select/selectAllRolesRepo");
-const getRoles = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.fetchAllStudents = void 0;
+const selectAllStudentsService_1 = require("../../../services/adminService/select/selectAllStudentsService");
+const fetchAllStudents = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const roles = yield selectAllRolesRepo_1.selectRoles.getRoles();
-        return roles;
+        // Call the service to fetch students
+        const students = yield (0, selectAllStudentsService_1.getAllStudents)();
+        res.status(200).json(students);
     }
     catch (err) {
-        throw new Error('Error fetching roles: ' + err.message);
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
     }
 });
-exports.getRoles = getRoles;
+exports.fetchAllStudents = fetchAllStudents;
