@@ -1,6 +1,6 @@
 <body class="justify-center items-center">
-
   <header class="bg-blue-900 py-4 fixed top-0 left-0 w-full z-50">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <div class="container mx-auto flex justify-between items-center">
       <div class="flex items-center gap-4">
         <img src="assets/src/img/homepage/images/SCLC.png" alt="Sta. Cruz Learning Center" class="w-12 h-12">
@@ -45,13 +45,22 @@
         <!-- Password Input -->
         <div id="passwordSection" class="mb-4">
           <label for="password" class="block text-sm font-medium text-white-700">Password</label>
-          <input
-            type="password"
-            id="password"
-            formControlName="password"
-            class="form-control mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            (input)="errorMessage = ''"
-          />
+          <div class="relative">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              (input)="errorMessage = ''"
+            />
+            <!-- <i class="fa-solid fa-eye absolute right-3 top-3 cursor-pointer"
+             [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i> -->
+            <i
+              class="fa-solid fa-eye absolute right-3 mt-4 cursor-pointer"
+              [ngClass]="passwordVisible ? 'fa-eye' : 'fa-eye-slash'"
+              (click)="togglePasswordVisibility()"
+            ></i>
+          </div>
           <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error text-red-500 text-sm mt-1">
             Password is required.
           </div>
@@ -82,4 +91,4 @@
     </div>
   </div>
   <app-footer></app-footer>
-  </body>
+</body>

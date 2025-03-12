@@ -14,6 +14,7 @@ import { tap } from 'rxjs/operators';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
+  passwordVisible: boolean = false;
 
   constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
     // Initialize the form group using FormBuilder
@@ -61,6 +62,10 @@ export class LoginComponent {
   }
   goToOnlineRegistration() {
     this.router.navigate(['/online_registration']);
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 
 }

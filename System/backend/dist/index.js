@@ -51,6 +51,7 @@ const termRoute_1 = __importDefault(require("./routes/departmental_usersRoute/pr
 const emailRoute_1 = __importDefault(require("./routes/emailRoute/emailRoute"));
 const paymentRoute_1 = __importDefault(require("./routes/requestsRoute/paymentRoute"));
 const createPaymentRoutes_1 = __importDefault(require("./routes/requestsRoute/createPaymentRoutes"));
+const allRole_1 = __importDefault(require("./routes/adminRoute/allRole/allRole"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRoutes_1.default);
 app.use('/register', (0, roleAuth_1.roleAuth)([1]), allUserRoute_1.default); // Only Admin can access
 app.use('/admin', (0, roleAuth_1.roleAuth)([1, 2]), selectUserRoute_1.default); // Only Admin and Owner can access
+app.use('/user', allRole_1.default); // Only Admin and Owner can access
 app.use('/principal', (0, roleAuth_1.roleAuth)([3, 4]), termRoute_1.default);
 app.use('/api', paymentRoute_1.default);
 app.use('/payment', createPaymentRoutes_1.default);
