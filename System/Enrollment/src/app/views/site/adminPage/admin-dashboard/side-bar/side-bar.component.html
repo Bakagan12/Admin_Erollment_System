@@ -1,40 +1,38 @@
-  <!-- Main Content -->
+<!-- Main Content -->
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <div class="flex flex-1 mt-16">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<div class="flex flex-1 mt-16">
 
-    <!-- Sidebar -->
-         <div class="fixed top-16 left-0 w-64 bg-gray-200 h-[calc(100vh-8rem)] p-6 shadow-md">
-        <a routerLink="/admin/dashboard">
-          <img src="assets/src/img/dashboard/images/admin.png" alt="Administrators" class="mx-auto w-3/4">
+  <!-- Sidebar -->
+  <div class="fixed top-16 left-0 w-64 bg-gray-200 h-[calc(100vh-8rem)] p-6 shadow-md">
+    <a routerLink="/admin/dashboard">
+      <img src="assets/src/img/dashboard/images/admin.png" alt="Administrators" class="mx-auto w-3/4">
+    </a>
+    <h2 class="text-center font-semibold text-lg mt-4 mb-4">Administration</h2>
+    <ul>
+      <li class="mb-3">
+        <a [routerLink]="['/admin/dashboard']" class="flex items-center p-2 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard'}">
+          <i class="text-2xl fas fa-table-columns mr-4"></i> Dashboard
         </a>
-        <h2 class="text-center font-semibold text-lg mt-4 mb-4">Administration</h2>
-        <ul>
-          <li class="mb-3">
-            <a [routerLink]="['/admin/dashboard']" class="flex items-center p-2 text-black rounded hover:bg-blue-700 hover:text-white">
-              <i class="text-2xl fas fa-table-columns mr-4"></i> Dashboard
-            </a>
-          </li>
-          <li class="mb-3">
-            <a [routerLink]="['/admin/dashboard/user/role']" class="flex items-center p-2 text-black rounded hover:bg-blue-700 hover:text-white">
-              <i class="text-2xl mr-2 fa-solid fa-users"></i>Users
-            </a>
-          </li>
-          <li class="mb-3">
-            <a [routerLink]="['/admin/dashboard/announcements']" class="flex items-center p-2 text-black rounded hover:bg-blue-700 hover:text-white">
-              <i class="text-2xl fa fa-user-tie mr-4" aria-hidden="true"></i>Roles
-            </a>
-          </li>
-          <li class="mb-3">
-            <a [routerLink]="" class="flex items-center p-2 text-black rounded hover:bg-blue-700 hover:text-white">
-               <i class="text-2xl mr-2 fa-solid fa-arrow-left"></i><button class=" hover:bg-blue-400 text-black py-2 px-2 rounded" (click)="logout()">
-                Logout
-              </button>
-            </a>
-          </li>
-          <!-- <button class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" (click)="logout()">
+      </li>
+      <li class="mb-3">
+        <a [routerLink]="['/admin/dashboard/user/role']" class="flex items-center p-2 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard/user/role'}">
+          <i class="text-2xl mr-2 fa-solid fa-users"></i>Users
+        </a>
+      </li>
+      <li class="mb-3">
+        <a [routerLink]="['/admin/dashboard/announcements']" class="flex items-center p-2 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard/announcements'}">
+          <i class="text-2xl fa fa-user-tie mr-4" aria-hidden="true"></i>Roles
+        </a>
+      </li>
+      <li class="mb-3">
+        <a class="flex items-center p-2 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === 'logout'}">
+          <i class="text-2xl mr-2 fa-solid fa-arrow-left"></i><button class="hover:bg-blue-400 text-black py-2 px-2 rounded" (click)="logout()">
             Logout
-          </button> -->
-        </ul>
-      </div>
+          </button>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,18 +1,35 @@
-import { Component } from '@angular/core';
-import {AuthService} from '../../../../../service/auth/auth.service'
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../../../service/auth/auth.service';
 import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './side-bar.component.html',
 })
-export class SideBarComponent {
-constructor (private authService: AuthService, private router: Router){}
-  logout(): void{
-    this.authService.logout();
+export class SideBarComponent implements OnInit {
+  activeLink: string = '';
+
+  constructor(private authService: AuthService, private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.activeLink = event.urlAfterRedirects;
+      }
+    });
   }
+
+  ngOnInit(): void {
+    this.activeLink = this.router.url;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.activeLink = 'logout';
+  }
+
   goToUserRoles() {
     this.router.navigate(['/admin/dashboard/user/role']);
   }
@@ -20,6 +37,7 @@ constructor (private authService: AuthService, private router: Router){}
   goToAnnouncements() {
     this.router.navigate(['/admin/dashboard/announcements']);
   }
+
   goToReports() {
     this.router.navigate(['/admin/dashboard/reports']);
   }

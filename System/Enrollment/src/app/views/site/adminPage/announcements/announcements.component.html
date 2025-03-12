@@ -1,4 +1,74 @@
-<app-header></app-header>
-<app-side-bar></app-side-bar>
-<p>announcements works!</p>
-<app-footer></app-footer>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<style>
+  .active{
+    background-color: blue;
+    color: white;
+  }
+</style>
+
+<body class="bg-gray-100 text-gray-900">
+  <app-header></app-header>
+
+  <app-side-bar></app-side-bar>
+
+  <!-- Main Content -->
+  <!-- Main Content -->
+  <div class="ml-64 p-8 pt-16 h-[calc(100vh-8rem)] justify-between overflow-auto">
+    <div class="flex flex-end justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold mb-6">Role List</h1>
+      <button class="bg-blue-500 text-white rounded p-2" style="align-self: flex-end;">Add New Role</button>
+    </div>
+    <div class="flex flex-col lg:flex-row justify-between flex-column">
+      <table class="min-w-full bg-white">
+        <thead>
+          <tr>
+            <th class="py-2 px-4 border-b">First Name</th>
+            <th class="py-2 px-4 border-b">M.I</th>
+            <th class="py-2 px-4 border-b">Last Name</th>
+            <th class="py-2 px-4 border-b">Email</th>
+            <th class="py-2 px-4 border-b">Username</th>
+            <th class="py-2 px-4 border-b">Password</th>
+            <th class="py-2 px-4 border-b">Role</th>
+            <th class="py-2 px-4 border-b">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="py-2 px-4 border-b">John</td>
+            <td class="py-2 px-4 border-b">D</td>
+            <td class="py-2 px-4 border-b">Doe</td>
+            <td class="py-2 px-4 border-b"> john.doeexample.com </td>
+            <td class="py-2 px-4 border-b">johndoe</td>
+            <td class="py-2 px-4 border-b">oixciuad8ay8sdyshasyd</td>
+            <td class="py-2 px-4 border-b">Admin</td>
+            <td class="py-2 px-4 border-b flex flex-col justify-center align-center text-center justify-content-center">
+              <button class="bg-yellow-500 text-white p-2  rounded w-20 ml-5 mb-2">Edit</button>
+              <button class="bg-red-500 text-white p-2  ml-5 rounded w-20">Delete</button>
+            </td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script>
+    function logout() {
+      alert('Logging out...');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+
+</html>
