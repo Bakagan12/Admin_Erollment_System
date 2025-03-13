@@ -3,12 +3,12 @@ import  db from "../../../config/db";
 
 export class selectAllUsers{
     static async getAllUsers(){
-        return db('gen_users').leftJoin('persons', 'gen_users.person_id', 'persons.id')
-                .leftJoin('suffix', 'suffix.id', 'persons.suffix_id')
-                .leftJoin('user_roles', 'gen_users.user_role_id', 'user_roles.id')
-                .leftJoin('status', 'gen_users.status_id', 'status.id')
-                .where('gen_users.status_id', '=', 1)
-                .where('gen_users.is_deleted', '!=', 1)
+        return db('gen_users').leftJoin('status', 'gen_users.status_id', 'status.id')
+        .leftJoin('user_roles', 'gen_users.user_role_id', 'user_roles.id')
+        .leftJoin('persons', 'gen_users.person_id', 'persons.id')
+        .leftJoin('suffix', 'suffix.id', 'persons.suffix_id')
+                // .where('gen_users.status_id', '=', 1)
+                // .where('gen_users.is_deleted', '!=', 1)
                 .where('user_roles.is_active', '=', 1)
                 .select(
                     'gen_users.id as user_id',
