@@ -30,9 +30,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="py-2 px-4 border-b">Admin</td>
-            <td class="py-2 px-4 border-b">Active</td>
+          <tr *ngFor="let role of roles">
+            <td class="py-2 px-4 border-b">{{role.role_name}}</td>
+            <td class="py-2 px-4 border-b">{{role.is_active == "1" ? "Active" : "Inactive" }}</td>
             <td class="py-2 px-4 border-b flex flex-row justify-center g-2 text-center">
               <button class="bg-yellow-500 text-white p-2 rounded w-20 mr-2">Edit</button>
               <button class="bg-red-500 text-white p-2 rounded w-20">Delete</button>
