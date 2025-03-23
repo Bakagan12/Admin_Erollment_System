@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
   standalone: true,
   selector: 'user-roles',
   imports: [SideBarComponent, HeaderComponent, FooterComponent, RouterModule, CommonModule, ReactiveFormsModule],
-  templateUrl: './announcements.component.html'
+  templateUrl: './roles.component.html'
 })
 export class AnnouncementComponent {
   isModalOpen: boolean = false;

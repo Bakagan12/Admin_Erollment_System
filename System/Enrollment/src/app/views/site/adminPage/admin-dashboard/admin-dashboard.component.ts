@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
@@ -12,8 +13,7 @@ import {AllUsersService} from '../../../../service/user/all-users.service';
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [HeaderComponent, FooterComponent, RouterModule, SideBarComponent],
-  templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  templateUrl: './admin-dashboard.component.html'
 })
 export class AdminDashboardComponent implements OnInit {
   totalRoles: number = 0;

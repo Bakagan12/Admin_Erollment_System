@@ -8,6 +8,29 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class AllUsersService {
+  first_name(arg0: string, first_name: any) {
+    throw new Error('Method not implemented.');
+  }
+  middle_name(arg0: string, middle_name: any ) {
+    throw new Error('Method not implemented.');
+  }
+  last_name(arg0: string, last_name: any ) {
+    throw new Error('Method not implemented.');
+  }
+  email(arg0: string, email: any ) {
+    throw new Error('Method not implemented.');
+  }
+  username(arg0: string, username: any ) {
+    throw new Error('Method not implemented.');
+  }
+  password(arg0: string, password: any ) {
+    throw new Error('Method not implemented.');
+  }
+  role_name(arg0: string, role_name: any ) {
+    throw new Error('Method not implemented.');
+  }
+
+
   private apiUrl = environment.apiUrl + '/all_user/get_all_user';
   constructor(private http: HttpClient, private auth: AuthService) { }
 

@@ -37,21 +37,23 @@
             <th class="py-2 px-4 border-b">Username</th>
             <th class="py-2 px-4 border-b">Password</th>
             <th class="py-2 px-4 border-b">Role</th>
-            <th class="py-2 px-4 border-b">Actions</th>
+            <th class="py-2 px-4 border-b">Status</th>
+            <th class="py-2 px-4 border-b justify-left">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="py-2 px-4 border-b">John</td>
-            <td class="py-2 px-4 border-b">D</td>
-            <td class="py-2 px-4 border-b">Doe</td>
-            <td class="py-2 px-4 border-b"> john.doeexample.com </td>
-            <td class="py-2 px-4 border-b">johndoe</td>
-            <td class="py-2 px-4 border-b">oixciuad8ay8sdyshasyd</td>
-            <td class="py-2 px-4 border-b">Admin</td>
-            <td class="py-2 px-4 border-b flex flex-col justify-center align-center text-center justify-content-center">
-              <button class="bg-yellow-500 text-white p-2  rounded w-20 ml-5 mb-2">Edit</button>
-              <button class="bg-red-500 text-white p-2  ml-5 rounded w-20">Delete</button>
+          <tr *ngFor="let user of users">
+            <td class="py-2 px-4 border-b">{{ user.first_name }}</td>
+            <td class="py-2 px-4 border-b">{{ user.middle_name }}</td>
+            <td class="py-2 px-4 border-b">{{ user.last_name }}</td>
+            <td class="py-2 px-4 border-b">{{ user.email }}</td>
+            <td class="py-2 px-4 border-b">{{ user.username }}</td>
+            <td class="py-2 px-4 border-b">{{ user.password }}</td>
+            <td class="py-2 px-4 border-b">{{ user.role_name }}</td>
+            <td class="py-2 px-4 border-b">{{ user.role_status || 'Active' }}</td>
+            <td class="py-2 px-4 border-b flex flex-col justify-center align-center text-center">
+              <button class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
+              <button class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
             </td>
           </tr>
           <!-- Add more rows as needed -->

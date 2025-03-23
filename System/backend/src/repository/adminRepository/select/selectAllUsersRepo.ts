@@ -12,6 +12,8 @@ export class selectAllUsers{
                 .where('user_roles.is_active', '=', 1)
                 .select(
                     'gen_users.id as user_id',
+                    'gen_users.username',
+                    'gen_users.password',
                     'persons.first_name',
                     'persons.middle_name',
                     'persons.last_name',

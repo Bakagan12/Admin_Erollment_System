@@ -11,8 +11,8 @@ import { ProgramsComponent } from './views/homePage/programs/programs.component'
 import {DashboardComponent} from './views/site/submaindashboard/dashboard/dashboard.component';
 import {AdminDashboardComponent} from './views/site/adminPage/admin-dashboard/admin-dashboard.component';
 import {StaffDashboardComponent} from './views/site/staffPage/dashboard/dashboard.component';
-import {UserRolesComponent} from './views/site/adminPage/user-roles/user-roles.component';
-import {AnnouncementComponent} from './views/site/adminPage/announcements/announcements.component';
+import {UserRolesComponent} from './views/site/adminPage/user/user.component';
+import {AnnouncementComponent} from './views/site/adminPage/role/roles.component';
 import {ReportsComponent} from './views/site/adminPage/reports/reports.component';
 import { ClassificationComponent } from './views/site/online_registration/classification/classification.component';
 import { Form1Component } from './views/site/online_registration/highschool_form/form1/form1.component';
