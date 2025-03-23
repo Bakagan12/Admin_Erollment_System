@@ -1,5 +1,7 @@
 export class Student{
     person_id: number;
+    mother_id: number;
+    father_id: number;
     student_guardian_id: number;
     student_emergency_contact_id: number;
     student_medical_history_id:number;
@@ -12,11 +14,14 @@ export class Student{
     subject_id:number;
     is_document_status:number;
     term_id: number;
+    status_id:number;
     is_deleted:number;
     created_by:number;
     updated_by:number;
     constructor(
         person_id: number,
+        mother_id: number,
+        father_id: number,
         student_guardian_id: number,
         student_emergency_contact_id: number,
         student_medical_history_id:number,
@@ -29,11 +34,14 @@ export class Student{
         subject_id:number,
         is_document_status:number,
         term_id: number,
+        status_id: number,
         is_deleted:number,
         created_by:number,
         updated_by:number
     ){
         this.person_id = person_id;
+        this.mother_id = mother_id;
+        this.father_id = father_id;
         this.student_guardian_id = student_guardian_id;
         this.student_emergency_contact_id = student_emergency_contact_id;
         this.student_medical_history_id = student_medical_history_id;
@@ -46,6 +54,7 @@ export class Student{
         this.subject_id = subject_id;
         this.is_document_status = is_document_status;
         this.term_id = term_id;
+        this.status_id = status_id;
         this.is_deleted = is_deleted;
         this.created_by = created_by;
         this.updated_by = updated_by;

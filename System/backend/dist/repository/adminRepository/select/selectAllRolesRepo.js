@@ -15,9 +15,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.selectRoles = void 0;
 const db_1 = __importDefault(require("../../../config/db"));
 class selectRoles {
+    // Get all active roles
     static getRoles() {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, db_1.default)('user_roles').select('role_name', 'is_active').where('is_active', '=', 1);
+        });
+    }
+    // Create a new role
+    static createRole(role) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, db_1.default)('user_roles')
+                .insert({ role_name: role.role_name, is_active: role.is_active });
+        });
+    }
+    // Update an existing role by id
+    static updateRole(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, db_1.default)('user_roles')
+                .where('id', user.id)
+                .update({ role_name: user.role_name, is_active: user.is_active, is_deleted: 0 });
+        });
+    }
+    // Delete a role by id
+    static deleteRole(role) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, db_1.default)('user_roles')
+                .where({ id: role.id })
+                .update({
+                is_deleted: 1,
+                is_deleted_by: role.is_deleted_by
+            });
         });
     }
 }

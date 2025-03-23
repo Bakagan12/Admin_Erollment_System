@@ -1,35 +1,52 @@
 import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-change-password',
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './change-password.component.html',
-  // styleUrls: ['./change-password.component.css'] // Optional for custom styles
 })
 export class ChangePasswordComponent {
 
-  // Check if the form is valid
-  checkFormValidity() {
-    const loginBtn = document.getElementById('loginBtn') as HTMLButtonElement;
-    const inputs = document.querySelectorAll('input') as NodeListOf<HTMLInputElement>;
+  changePasswordForm: FormGroup;
+  passwordVisible: boolean = false; // To toggle password visibility
+  errorMessage: string = ''; // To display any error message if needed
 
-    inputs.forEach(input => {
-      input.addEventListener('input', () => {
-        const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-        loginBtn.disabled = !allFilled;
-
-        // Toggle button styles based on whether the form is filled
-        if (allFilled) {
-          loginBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-          loginBtn.classList.add('bg-[#162938]', 'cursor-pointer');
-        } else {
-          loginBtn.classList.remove('bg-[#162938]', 'cursor-pointer');
-          loginBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-        }
-      });
+  constructor(private fb: FormBuilder, private router: Router) {
+    // Initialize the form group
+    this.changePasswordForm = this.fb.group({
+      username: [{ value: '', disabled: true }, Validators.required],  // Username field is readonly
+      newPassword: ['', [Validators.required, Validators.minLength(5)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(5)]]
     });
   }
 
   ngOnInit(): void {
-    this.checkFormValidity();
+    // Optionally populate the username field if needed
+    // this.changePasswordForm.patchValue({ username: 'some_username' });
+  }
+
+  // Toggles password visibility
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  // Reset password functionality (this will be linked to the form submission)
+  resetPassword() {
+    if (this.changePasswordForm.valid) {
+      const formValues = this.changePasswordForm.value;
+      console.log('Form Submitted:', formValues);
+      // Call your service here to handle the password change
+    } else {
+      this.errorMessage = 'Please ensure all fields are filled correctly.';
+    }
+  }
+
+  // Getter for easier form validation checking
+  get f() {
+    return this.changePasswordForm.controls;
   }
 }

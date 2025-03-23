@@ -38,12 +38,12 @@ app.use(((req: Request, res: Response, next: NextFunction) => {
 
 // Define the routes
 app.use('/auth', authRoutes);
-app.use('/register', roleAuth([1]), departmentalUsers);  // Only Admin can access
+app.use('/register', roleAuth([1]), departmentalUsers);
 
-app.use('/admin', roleAuth([1,2]), selectUserRoute);     // Only Admin and Owner can access
-app.use('/user', roles);     // Only Admin and Owner can access
-app.use('/all_user', fetchallUser);     // Only Admin and Owner can access
-app.use('/all_student', Student);     // Only Admin and Owner can access
+app.use('/admin', roleAuth([1,2]), selectUserRoute);
+app.use('/user', roles);
+app.use('/all_user', fetchallUser);
+app.use('/all_student', Student);
 
 app.use('/principal', roleAuth([3, 4]), termRoute);
 

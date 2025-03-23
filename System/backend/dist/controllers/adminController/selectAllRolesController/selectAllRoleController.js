@@ -9,15 +9,90 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.selectAllRolesController = void 0;
+exports.deleteRoleController = exports.updateRoleController = exports.createRoleController = exports.selectAllRolesController = void 0;
 const selectAllRolesService_1 = require("../../../services/adminService/select/selectAllRolesService");
+// Get all active roles
 const selectAllRolesController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const roles = yield (0, selectAllRolesService_1.getRoles)();
         res.status(200).json(roles);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error fetching roles' });
+        console.error('Error fetching roles:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching roles',
+            error: error.message || 'Unknown error',
+        });
     }
 });
 exports.selectAllRolesController = selectAllRolesController;
+// Create a new role
+const createRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.body; // Assuming the new role data is in the request body
+        const roleId = yield (0, selectAllRolesService_1.createRole)(user);
+        res.status(201).json({
+            success: true,
+            message: 'Role created successfully',
+            data: { roleId },
+        });
+    }
+    catch (error) {
+        console.error('Error creating role:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error creating role',
+            error: error.message || 'Unknown error',
+        });
+    }
+});
+exports.createRoleController = createRoleController;
+// Update an existing role
+const updateRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.body; // The updated role data from the request body
+        const updatedCount = yield (0, selectAllRolesService_1.updateRole)(user);
+        if (updatedCount === 0) {
+            res.status(404).json({
+                success: false,
+                message: 'Role not found or no changes made',
+            });
+            return;
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Role updated successfully',
+        });
+    }
+    catch (error) {
+        console.error('Error updating role:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating role',
+            error: error.message || 'Unknown error',
+        });
+    }
+});
+exports.updateRoleController = updateRoleController;
+// Delete a role by ID
+const deleteRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log('Request Body:', req.body); // Log the request body to see if 'id' is there
+        const role = req.body;
+        const result = yield (0, selectAllRolesService_1.deleteRole)(role);
+        res.status(201).json({
+            success: true,
+            message: 'Role deleted successfully'
+        });
+    }
+    catch (error) {
+        console.error('Error deleting role:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting role',
+            error: error.message || 'Unknown error',
+        });
+    }
+});
+exports.deleteRoleController = deleteRoleController;

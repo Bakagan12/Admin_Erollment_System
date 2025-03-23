@@ -1,31 +1,121 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Choices UI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="h-screen flex items-center justify-center bg-gray-100">
- <app-header></app-header>
-  <div class="text-center space-y-6">
-    <h1 class="text-3xl font-bold text-gray-800">Choose Your Level</h1>
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <!-- Elementary Choice -->
-      <a routerLink="/online_registration/kidner_elementary/form1" class="block p-6 max-w-sm bg-blue-500 text-white rounded-2xl shadow-lg transform hover:scale-105 transition-transform">
-        <h2 class="text-2xl font-semibold">Kinder | Elementary</h2>
-        <p class="mt-2">Start your learning journey here!</p>
-      </a>
+<style>
+  body{
+    background-color: rgb(161, 196, 243);
+    background-repeat: none;
+  }
+</style>
+<body class="h-screen flex items-center justify-center">
+  <app-header></app-header>
+  <div class="text-center space-y-6 col-12 bg-blue-100 p-5 w-100 ml-10 mr-10 mt-10 rounded-lg">
+    <h1 class="text-2xl">Register</h1>
 
-      <!-- High School Choice -->
-      <a routerLink="/online_registration/kidner_elementary/form1" class="block p-6 max-w-sm bg-green-500 text-white rounded-2xl shadow-lg transform hover:scale-105 transition-transform">
-        <h2 class="text-2xl font-semibold">High School</h2>
-        <p class="mt-2">Prepare for the next level!</p>
-      </a>
-    </div>
+    <!-- Form Starts Here -->
+    <form class="grid grid-cols-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- First Name -->
+        <div class="flex flex-col items-center">
+          <label for="first_name" class="text-lg">First Name</label>
+          <input type="text" id="first_name" name="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
+        </div>
+
+        <!-- M.I. -->
+        <div class="flex flex-col w-25 items-center">
+          <label for="mi" class="text-lg">M.I.</label>
+          <input type="text" id="mi" name="mi" class="border rounded p-2 w-full mt-2" placeholder="M.I.">
+        </div>
+
+        <!-- Last Name -->
+        <div class="flex flex-col items-center">
+          <label for="last_name" class="text-lg">Last Name</label>
+          <input type="text" id="last_name" name="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
+        </div>
+
+        <!-- Suffix -->
+        <div class="flex flex-col items-center">
+          <label for="suffix" class="text-lg">Suffix</label>
+          <input type="text" id="suffix" name="suffix" class="border rounded p-2 w-full mt-2" placeholder="Enter Suffix">
+        </div>
+
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Date of Birth -->
+        <div class="flex flex-col items-center">
+          <label for="dob" class="text-lg">Date of Birth</label>
+          <input type="date" id="dob" name="dob" class="border rounded p-2 w-full mt-2">
+        </div>
+        <!-- Gender -->
+        <div class="flex flex-col items-center">
+          <label for="gender" class="text-lg">Gender</label>
+          <select id="gender" name="gender" class="border rounded p-2 w-full mt-2">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Address -->
+        <div class="flex flex-col items-center">
+          <label for="address" class="text-lg">Address</label>
+          <input type="text" id="address" name="address" class="border rounded p-2 w-full mt-2" placeholder="Enter Address">
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col items-center">
+          <label for="email" class="text-lg">Email</label>
+          <input type="email" id="email" name="email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
+        </div>
+
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Contact Number -->
+          <div class="flex flex-col items-center">
+            <label for="contact_number" class="text-lg">Contact Number</label>
+            <input type="tel" id="contact_number" name="contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Contact Number">
+          </div>
+            <!-- Emergency Contact Name -->
+          <div class="flex flex-col items-center">
+            <label for="emergency_contact_name" class="text-lg">Emergency Contact Name</label>
+            <input type="text" id="emergency_contact_name" name="emergency_contact_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Name">
+          </div>
+
+          <!-- Emergency Contact Number -->
+          <div class="flex flex-col items-center">
+            <label for="emergency_contact_number" class="text-lg">Emergency Contact Number</label>
+            <input type="tel" id="emergency_contact_number" name="emergency_contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Number">
+          </div>
+
+
+
+
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+         <!-- Password -->
+         <div class="flex flex-col items-center">
+          <label for="password" class="text-lg">Password</label>
+          <input type="password" id="password" name="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="flex flex-col items-center">
+          <label for="confirm_password" class="text-lg">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Confirm Password">
+        </div>
+        <!-- Register Button -->
+        <div class="col-span-full flex justify-center mt-6">
+          <button type="submit" class="bg-blue-500 text-white p-2 rounded w-64">Register</button>
+        </div>
+      </div>
+    </form>
+    <!-- Form Ends Here -->
   </div>
-  <app-footer></app-footer>
+  <!-- <app-footer></app-footer> -->
 </body>
 </html>
-

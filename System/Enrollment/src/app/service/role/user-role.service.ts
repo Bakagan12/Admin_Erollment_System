@@ -15,7 +15,7 @@ export class UserRoleService {
 
   getAllRoles(): Observable<any> {
     const token = this.auth.getToken();
-    console.log('User Role Token:' + token);
+    console.log('User Role Tokens:' + token);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(`${this.apiUrl}`, { headers });
   }

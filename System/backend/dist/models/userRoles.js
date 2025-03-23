@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRoles = void 0;
 class UserRoles {
-    constructor(role_name, is_active, is_deleted, is_deleted_by, created_by, updated_by) {
+    constructor(id, role_name, is_active, is_deleted, is_deleted_by, created_by, updated_by) {
+        this.id = id;
         this.role_name = role_name;
         this.is_active = is_active;
         this.is_deleted = is_deleted;

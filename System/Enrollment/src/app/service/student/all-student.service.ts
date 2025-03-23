@@ -13,7 +13,6 @@ export class AllStudentService {
 
   getAllStudents(): Observable<any> {
       const token = this.auth.getToken();
-      console.log('All Student Token:' + token);
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       return this.http.get<any>(`${this.apiUrl}`, { headers });
     }

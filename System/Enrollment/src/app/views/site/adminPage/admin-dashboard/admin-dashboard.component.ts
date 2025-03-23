@@ -35,7 +35,6 @@ export class AdminDashboardComponent implements OnInit {
       // If token exists, proceed to fetch roles
       this.userRoleService.getAllRoles().subscribe(
         (roles) => {
-          console.log("Token from AuthService: ", token);
           console.log('Roles fetched:', roles);
           this.totalRoles = roles.length;
         },
@@ -46,19 +45,15 @@ export class AdminDashboardComponent implements OnInit {
       );
       this.AllStudentService.getAllStudents().subscribe(
         (students) => {
-          console.log("Token from AuthService: ", token);
-          console.log('Students fetched:', students);
+          console.log('Roles fetched:', students);
           this.totalStudents = students.length;
         },
         (error) => {
-          console.error('Error fetching students:', error);
           this.isTokenValid = false;
         }
       );
       this.AllUsersService.getAllUsers().subscribe(
         (users) => {
-          console.log("Token from AuthService: ", token); // Should log the same token as in AllUsersService
-          console.log('Users fetched:', users);
           this.totalUsers = users.length;
 
         },

@@ -1,4 +1,5 @@
 export class UserRoles{
+    id?: number;
     role_name:string;
     is_active:number;
     is_deleted:number;
@@ -7,6 +8,7 @@ export class UserRoles{
     updated_by:number;
 
     constructor(
+        id: number,
         role_name:string,
         is_active:number,
         is_deleted:number,
@@ -14,6 +16,7 @@ export class UserRoles{
         created_by:number,
         updated_by:number,
     ){
+        this.id = id;
         this.role_name = role_name;
         this.is_active = is_active;
         this.is_deleted = is_deleted;
