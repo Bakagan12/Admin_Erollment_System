@@ -11,6 +11,9 @@ import { StudentMedicalHistory } from "../../models/studentMedicalHistory";
 
 
 export class allUserRepo{
+    // static async gegisterUsers():Promise<any>{
+    //     return db()
+    // }
     static async findAllUsers(): Promise<any> {
         return db('gen_users')
             .join('persons', 'gen_users.person_id', 'persons.id')
@@ -233,12 +236,12 @@ export class allUserRepo{
 
                 return studentResult;
 
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    throw new Error(`Error creating User: ${error.message}`);
-                } else {
-                    throw new Error('An unknown error occurred');
-                }
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Error creating User: ${error.message}`);
+            } else {
+                throw new Error('An unknown error occurred');
             }
         }
+    }
 }
