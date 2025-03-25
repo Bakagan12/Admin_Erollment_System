@@ -16,6 +16,9 @@ exports.allUserRepo = void 0;
 const db_1 = __importDefault(require("../../config/db"));
 const uuid_1 = require("uuid");
 class allUserRepo {
+    // static async gegisterUsers():Promise<any>{
+    //     return db()
+    // }
     static findAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, db_1.default)('gen_users')

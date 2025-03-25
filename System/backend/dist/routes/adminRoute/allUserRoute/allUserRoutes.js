@@ -4,4 +4,7 @@ const express_1 = require("express");
 const allUserController_1 = require("../../../controllers/adminController/selectAllUserController/allUserController");
 const router = (0, express_1.Router)();
 router.get('/get_all_user', allUserController_1.fetchAllUsers);
+router.post('/user/create', allUserController_1.createUserController);
+router.put('/user/update/:userId', allUserController_1.updateUserController);
+router.put('/user/delete/:userId', allUserController_1.deleteUserController);
 exports.default = router;

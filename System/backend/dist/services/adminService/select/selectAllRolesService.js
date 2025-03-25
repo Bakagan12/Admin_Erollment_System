@@ -34,10 +34,10 @@ const createRole = (user) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createRole = createRole;
 // Update an existing role
-const updateRole = (user) => __awaiter(void 0, void 0, void 0, function* () {
+const updateRole = (user, roleID) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const updatedCount = yield selectAllRolesRepo_1.selectRoles.updateRole(user);
-        return updatedCount; // Return the count of updated rows
+        const updatedCount = yield selectAllRolesRepo_1.selectRoles.updateRole(user, roleID);
+        return updatedCount;
     }
     catch (err) {
         throw new Error('Error updating role: ' + err.message);
@@ -45,9 +45,9 @@ const updateRole = (user) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.updateRole = updateRole;
 // Delete a role by id
-const deleteRole = (role) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteRole = (roleID, roleData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deletedCount = yield selectAllRolesRepo_1.selectRoles.deleteRole(role);
+        const deletedCount = yield selectAllRolesRepo_1.selectRoles.deleteRole(roleID, roleData); // Pass roleID and roleData
         return deletedCount; // Return the count of deleted rows
     }
     catch (err) {

@@ -29,21 +29,23 @@ class selectRoles {
         });
     }
     // Update an existing role by id
-    static updateRole(user) {
+    static updateRole(user, userID) {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, db_1.default)('user_roles')
-                .where('id', user.id)
+                .where({ id: userID })
                 .update({ role_name: user.role_name, is_active: user.is_active, is_deleted: 0 });
         });
     }
     // Delete a role by id
-    static deleteRole(role) {
+    // This is your updated `deleteRole` method:
+    static deleteRole(roleID, roleData) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { is_deleted_by } = roleData;
             return (0, db_1.default)('user_roles')
-                .where({ id: role.id })
+                .where({ id: roleID })
                 .update({
                 is_deleted: 1,
-                is_deleted_by: role.is_deleted_by
+                is_deleted_by: is_deleted_by,
             });
         });
     }

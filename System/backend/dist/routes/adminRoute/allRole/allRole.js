@@ -6,6 +6,6 @@ const selectAllRoleController_1 = require("../../../controllers/adminController/
 const router = (0, express_1.Router)();
 router.get('/allRoles', selectAllRoleController_1.selectAllRolesController);
 router.post('/role/create', selectAllRoleController_1.createRoleController);
-router.put('/role/update', selectAllRoleController_1.updateRoleController);
-router.post('/role/delete', selectAllRoleController_1.deleteRoleController);
+router.put('/role/update/:roleID', selectAllRoleController_1.updateRoleController);
+router.put('/role/delete/:roleID', selectAllRoleController_1.deleteRoleController);
 exports.default = router;

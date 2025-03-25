@@ -10,13 +10,39 @@ import { AuthService } from '../auth/auth.service';
 export class UserRoleService {
 
   private apiUrl = environment.apiUrl + '/user/allRoles';
+  private createRoleUrl = environment.apiUrl + '/user/role/create';
+  private updateRoleUrl = environment.apiUrl + '/user/role/update';
+  private deleteRoleUrl = environment.apiUrl + '/user/role/delete';
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 
+  // Get all roles
   getAllRoles(): Observable<any> {
     const token = this.auth.getToken();
-    console.log('User Role Tokens:' + token);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.apiUrl}`, { headers });
+    return this.http.get<any>(this.apiUrl, { headers });
+  }
+
+  // Create a new role
+  createRole(roleData: any): Observable<any> {
+    const token = this.auth.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(this.createRoleUrl, roleData, { headers });
+  }
+
+  // Update a role
+  updateRole(roleId: string, roleData: any): Observable<any> {
+    const token = this.auth.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${this.updateRoleUrl}/${roleId}`, roleData, { headers });
+  }
+
+  // Delete a role
+  deleteRole(roleId: string): Observable<any> {
+    const token = this.auth.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${this.deleteRoleUrl}/${roleId}`, { headers });
+    // Or use DELETE if backend uses DELETE:
+    // return this.http.delete<any>(`${this.deleteRoleUrl}/${roleId}`, { headers });
   }
 }

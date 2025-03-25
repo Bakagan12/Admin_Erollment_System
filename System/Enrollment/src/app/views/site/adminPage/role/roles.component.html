@@ -34,8 +34,9 @@
             <td class="py-2 px-4 border-b">{{role.role_name}}</td>
             <td class="py-2 px-4 border-b">{{role.is_active == "1" ? "Active" : "Inactive" }}</td>
             <td class="py-2 px-4 border-b flex flex-row justify-center g-2 text-center">
-              <button class="bg-yellow-500 text-white p-2 rounded w-20 mr-2">Edit</button>
-              <button class="bg-red-500 text-white p-2 rounded w-20">Delete</button>
+              <button (click)="openEditModal(role)" class="bg-yellow-500 text-white p-2 rounded w-20 mr-2">Edit</button>
+              <button (click)="openDeleteModal(role)" class="bg-red-500 text-white p-2 rounded w-20">Delete</button>
+
             </td>
           </tr>
           <!-- Add more rows as needed -->
@@ -43,8 +44,7 @@
       </table>
     </div>
 
-
-  <!-- Modal -->
+  <!-- Add New Role Modal -->
   <div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-96">
       <h3 class="text-xl font-semibold mb-4">Add New Role</h3>
@@ -70,5 +70,44 @@
       </form>
     </div>
   </div>
+
+  <!-- Edit Role Modal -->
+  <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h3 class="text-xl font-semibold mb-4">Edit Role</h3>
+      <form [formGroup]="roleForm" (ngSubmit)="updateRole()">
+        <div class="mb-4">
+          <label for="roleName" class="block text-sm font-medium text-gray-700">Role Name</label>
+          <input id="roleName" formControlName="roleName" maxlength="40" class="w-full mt-1 p-2 border border-gray-300 rounded-md" type="text" required />
+          <div *ngIf="roleForm.get('roleName')?.invalid && roleForm.get('roleName')?.touched" class="text-red-500 text-sm">
+            Role Name is required.
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+          <select id="status" formControlName="status" class="w-full mt-1 p-2 border border-gray-300 rounded-md" required>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="flex justify-between">
+          <button type="button" (click)="closeEditModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">Cancel</button>
+          <button type="submit" [disabled]="roleForm.invalid" class="bg-blue-500 text-white px-4 py-2 rounded-md">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+<div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h3 class="text-xl font-semibold mb-4">Are you sure you want to delete this role?</h3>
+    <div class="flex justify-between">
+      <button type="button" (click)="closeDeleteModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">Cancel</button>
+      <button type="button" (click)="deleteRole()" class="bg-red-500 text-white px-4 py-2 rounded-md">Delete</button>
+    </div>
+  </div>
+</div>
+
 
   <app-footer></app-footer>

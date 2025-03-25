@@ -22,21 +22,22 @@ export const createRole = async (user: UserRoles): Promise<number[]> => {
 }
 
 // Update an existing role
-export const updateRole = async (user: UserRoles): Promise<number> => {
+export const updateRole = async (user: UserRoles, roleID: number): Promise<number> => {
     try {
-        const updatedCount = await selectRoles.updateRole(user);
-        return updatedCount; // Return the count of updated rows
+        const updatedCount = await selectRoles.updateRole(user, roleID);
+        return updatedCount;
     } catch (err) {
         throw new Error('Error updating role: ' + (err as Error).message);
     }
 }
 
 // Delete a role by id
-export const deleteRole = async (role: UserRoles): Promise<number> => {
+export const deleteRole = async (roleID: number, roleData: any): Promise<number> => {
     try {
-        const deletedCount = await selectRoles.deleteRole(role);
+        const deletedCount = await selectRoles.deleteRole(roleID, roleData); // Pass roleID and roleData
         return deletedCount; // Return the count of deleted rows
     } catch (err) {
         throw new Error('Error deleting role: ' + (err as Error).message);
     }
 }
+

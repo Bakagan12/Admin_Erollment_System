@@ -39,8 +39,9 @@ export const createRoleController = async (req: any, res: any): Promise<void> =>
 // Update an existing role
 export const updateRoleController = async (req: any, res: any): Promise<void> => {
     try {
-        const user: UserRoles = req.body;  // The updated role data from the request body
-        const updatedCount = await updateRole(user);
+        const roleID = req.params;
+        const role: UserRoles = req.body;  // The updated role data from the request body
+        const updatedCount = await updateRole(role, roleID);
         
         if (updatedCount === 0) {
             res.status(404).json({
@@ -67,23 +68,18 @@ export const updateRoleController = async (req: any, res: any): Promise<void> =>
 // Delete a role by ID
 export const deleteRoleController = async (req: any, res: any): Promise<void> => {
     try {
-      console.log('Request Body:', req.body);  // Log the request body to see if 'id' is there
-      const role: UserRoles  = req.body;
-
-      const result = await deleteRole(role);
-
-      res.status(201).json({
+        const { roleID } = req.params;
+        const { roleData } = req.body;
+        const result = await deleteRole(Number(roleID), roleData);
+        res.status(201).json({
             success: true,
             message: 'Role deleted successfully'
         });
     } catch (error: any) {
-      console.error('Error deleting role:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error deleting role',
-        error: error.message || 'Unknown error',
-      });
+        res.status(500).json({ message: 'Error deleting user: ' + (error as Error).message });
     }
 };
+
+
 
 

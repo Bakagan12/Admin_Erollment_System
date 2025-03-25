@@ -9,16 +9,17 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 
-
 <body class="bg-gray-100 text-gray-900">
   <app-header></app-header>
 
-  <app-side-bar><style>
-    .active{
-      background-color: blue;
-      color: white;
-    }
-  </style></app-side-bar>
+  <app-side-bar>
+    <style>
+      .active {
+        background-color: blue;
+        color: white;
+      }
+    </style>
+  </app-side-bar>
 
   <!-- Main Content -->
   <div class="ml-64 p-8 pt-16 h-[calc(100vh-8rem)] justify-between overflow-auto">
@@ -51,48 +52,140 @@
             <td class="py-2 px-4 border-b">{{ user.password }}</td>
             <td class="py-2 px-4 border-b">{{ user.role_name }}</td>
             <td class="py-2 px-4 border-b">{{ user.role_status || 'Active' }}</td>
-            <td class="py-2 px-4 border-b flex flex-col justify-center align-center text-center">
-              <button class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
-              <button class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
+            <td class="py-2 px-4 border-b flex flex-col justify-center items-center text-center">
+              <button (click)="openEditModal(user)" class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
+              <button (click)="openDeleteModal(user)" class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
             </td>
           </tr>
-          <!-- Add more rows as needed -->
         </tbody>
       </table>
     </div>
   </div>
 
   <app-footer></app-footer>
- <!-- Modal -->
- <div *ngIf="openModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+
+  <!-- Create User Modal -->
+  <div *ngIf="openModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+    <div class="text-center space-y-6 col-12 bg-blue-100 p-5 w-100 ml-10 mr-10 mt-10 rounded-lg">
+      <h1 class="text-2xl">Register</h1>
+
+      <!-- Form Starts Here -->
+      <form (ngSubmit)="saveUser()" [formGroup]="userForm" class="grid grid-cols-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="flex flex-col items-center">
+            <label for="first_name" class="text-lg">First Name</label>
+            <input type="text" id="first_name" formControlName="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
+          </div>
+
+          <div class="flex flex-col w-25 items-center">
+            <label for="mi" class="text-lg">M.I.</label>
+            <input type="text" id="mi" formControlName="middle_name" class="border rounded p-2 w-full mt-2" placeholder="M.I.">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="last_name" class="text-lg">Last Name</label>
+            <input type="text" id="last_name" formControlName="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="suffix" class="text-lg">Suffix</label>
+            <input type="text" id="suffix" formControlName="suffix" class="border rounded p-2 w-full mt-2" placeholder="Enter Suffix">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="flex flex-col items-center">
+            <label for="dob" class="text-lg">Date of Birth</label>
+            <input type="date" id="dob" formControlName="dob" class="border rounded p-2 w-full mt-2">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="gender" class="text-lg">Gender</label>
+            <select id="gender" formControlName="gender" class="border rounded p-2 w-full mt-2">
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="address" class="text-lg">Address</label>
+            <input type="text" id="address" formControlName="address" class="border rounded p-2 w-full mt-2" placeholder="Enter Address">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="email" class="text-lg">Email</label>
+            <input type="email" id="email" formControlName="email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="flex flex-col items-center">
+            <label for="contact_number" class="text-lg">Contact Number</label>
+            <input type="tel" id="contact_number" formControlName="contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Contact Number">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="emergency_contact_name" class="text-lg">Emergency Contact Name</label>
+            <input type="text" id="emergency_contact_name" formControlName="emergency_contact_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Name">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="emergency_contact_number" class="text-lg">Emergency Contact Number</label>
+            <input type="tel" id="emergency_contact_number" formControlName="emergency_contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Number">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div class="flex flex-col items-center">
+            <label for="password" class="text-lg">Password</label>
+            <input type="password" id="password" formControlName="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
+          </div>
+
+          <div class="flex flex-col items-center">
+            <label for="confirm_password" class="text-lg">Confirm Password</label>
+            <input type="password" id="confirm_password" formControlName="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Confirm Password">
+          </div>
+
+          <div class="col-span-full flex justify-between mt-6">
+            <button (click)="openModal = false" class="bg-red-500 text-white text-xl p-2 rounded w-64">Close</button>
+            <button type="submit" class="bg-blue-500 text-white text-xl p-2 rounded w-64">Register</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+<!-- Edit Modal -->
+<div *ngIf="isEditModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
   <div class="text-center space-y-6 col-12 bg-blue-100 p-5 w-100 ml-10 mr-10 mt-10 rounded-lg">
-    <h1 class="text-2xl">Register</h1>
+    <h1 class="text-2xl">Edit User</h1>
 
     <!-- Form Starts Here -->
-    <form class="grid grid-cols-1">
+    <form (ngSubmit)="updateUser()" [formGroup]="userForm" class="grid grid-cols-1">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- First Name -->
         <div class="flex flex-col items-center">
           <label for="first_name" class="text-lg">First Name</label>
-          <input type="text" id="first_name" name="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
+          <input type="text" id="first_name" formControlName="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
         </div>
 
         <!-- M.I. -->
         <div class="flex flex-col w-25 items-center">
           <label for="mi" class="text-lg">M.I.</label>
-          <input type="text" id="mi" name="mi" class="border rounded p-2 w-full mt-2" placeholder="M.I.">
+          <input type="text" id="mi" formControlName="middle_name" class="border rounded p-2 w-full mt-2" placeholder="M.I.">
         </div>
 
         <!-- Last Name -->
         <div class="flex flex-col items-center">
           <label for="last_name" class="text-lg">Last Name</label>
-          <input type="text" id="last_name" name="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
+          <input type="text" id="last_name" formControlName="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
         </div>
 
         <!-- Suffix -->
         <div class="flex flex-col items-center">
           <label for="suffix" class="text-lg">Suffix</label>
-          <input type="text" id="suffix" name="suffix" class="border rounded p-2 w-full mt-2" placeholder="Enter Suffix">
+          <input type="text" id="suffix" formControlName="suffix" class="border rounded p-2 w-full mt-2" placeholder="Enter Suffix">
         </div>
       </div>
 
@@ -100,50 +193,50 @@
         <!-- Date of Birth -->
         <div class="flex flex-col items-center">
           <label for="dob" class="text-lg">Date of Birth</label>
-          <input type="date" id="dob" name="dob" class="border rounded p-2 w-full mt-2">
+          <input type="date" id="dob" formControlName="dob" class="border rounded p-2 w-full mt-2">
         </div>
 
         <!-- Gender -->
         <div class="flex flex-col items-center">
           <label for="gender" class="text-lg">Gender</label>
-          <select id="gender" name="gender" class="border rounded p-2 w-full mt-2">
-            <option value="" disabled selected>Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+          <select id="gender" formControlName="gender" class="border rounded p-2 w-full mt-2">
+            <option value="male" [selected]="users.gender === 'male'">Male</option>
+            <option value="female" [selected]="users.gender === 'female'">Female</option>
+            <option value="other" [selected]="users.gender === 'other'">Other</option>
+
           </select>
         </div>
 
         <!-- Address -->
         <div class="flex flex-col items-center">
           <label for="address" class="text-lg">Address</label>
-          <input type="text" id="address" name="address" class="border rounded p-2 w-full mt-2" placeholder="Enter Address">
+          <input type="text" id="address" formControlName="address" class="border rounded p-2 w-full mt-2" placeholder="Enter Address">
         </div>
 
         <!-- Email -->
         <div class="flex flex-col items-center">
           <label for="email" class="text-lg">Email</label>
-          <input type="email" id="email" name="email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
+          <input type="email" id="email" formControlName="email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
         <!-- Contact Number -->
         <div class="flex flex-col items-center">
           <label for="contact_number" class="text-lg">Contact Number</label>
-          <input type="tel" id="contact_number" name="contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Contact Number">
+          <input type="tel" id="contact_number" formControlName="contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Contact Number">
         </div>
 
         <!-- Emergency Contact Name -->
         <div class="flex flex-col items-center">
           <label for="emergency_contact_name" class="text-lg">Emergency Contact Name</label>
-          <input type="text" id="emergency_contact_name" name="emergency_contact_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Name">
+          <input type="text" id="emergency_contact_name" formControlName="emergency_contact_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Name">
         </div>
 
         <!-- Emergency Contact Number -->
         <div class="flex flex-col items-center">
           <label for="emergency_contact_number" class="text-lg">Emergency Contact Number</label>
-          <input type="tel" id="emergency_contact_number" name="emergency_contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Number">
+          <input type="tel" id="emergency_contact_number" formControlName="emergency_contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Number">
         </div>
       </div>
 
@@ -151,27 +244,37 @@
         <!-- Password -->
         <div class="flex flex-col items-center">
           <label for="password" class="text-lg">Password</label>
-          <input type="password" id="password" name="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
+          <input type="password" id="password" formControlName="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
         </div>
 
         <!-- Confirm Password -->
         <div class="flex flex-col items-center">
           <label for="confirm_password" class="text-lg">Confirm Password</label>
-          <input type="password" id="confirm_password" name="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Confirm Password">
-        </div>
-
-        <!-- Register Button -->
-        <div class="col-span-full flex justify-between mt-6">
-          <button (click)="openModal = false" class="bg-red-500 text-white text-xl p-2 rounded w-64">Close</button>
-          <button type="submit" class="bg-blue-500 text-white text-xl p-2 rounded w-64">Register</button>
+          <input type="password" id="confirm_password" formControlName="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Confirm Password">
         </div>
       </div>
+
+      <div class="flex justify-between mt-6">
+        <button type="button" (click)="closeEditModal()" class="bg-red-500 text-white text-xl p-2 rounded w-32">Cancel</button>
+        <button type="submit" [disabled]="userForm.invalid" class="bg-blue-500 text-white text-xl p-2 rounded w-32">Save</button>
+      </div>
     </form>
-
-    <!-- Close Modal Button -->
-
   </div>
 </div>
+
+
+
+  <!-- Delete Modal -->
+  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+    <div class="bg-white p-6 rounded-lg w-96">
+      <h1 class="text-2xl mb-4">Delete User</h1>
+      <p>Are you sure you want to delete this user?</p>
+      <div class="flex justify-between mt-6">
+        <button (click)="closeDeleteModal()" class="bg-gray-500 text-white rounded p-2 w-32">Cancel</button>
+        <button (click)="deleteUser()" class="bg-red-500 text-white rounded p-2 w-32">Delete</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     function logout() {

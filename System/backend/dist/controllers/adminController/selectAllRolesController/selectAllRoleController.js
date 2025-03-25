@@ -51,8 +51,9 @@ exports.createRoleController = createRoleController;
 // Update an existing role
 const updateRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = req.body; // The updated role data from the request body
-        const updatedCount = yield (0, selectAllRolesService_1.updateRole)(user);
+        const roleID = req.params;
+        const role = req.body; // The updated role data from the request body
+        const updatedCount = yield (0, selectAllRolesService_1.updateRole)(role, roleID);
         if (updatedCount === 0) {
             res.status(404).json({
                 success: false,
@@ -78,21 +79,16 @@ exports.updateRoleController = updateRoleController;
 // Delete a role by ID
 const deleteRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('Request Body:', req.body); // Log the request body to see if 'id' is there
-        const role = req.body;
-        const result = yield (0, selectAllRolesService_1.deleteRole)(role);
+        const { roleID } = req.params;
+        const { roleData } = req.body;
+        const result = yield (0, selectAllRolesService_1.deleteRole)(Number(roleID), roleData);
         res.status(201).json({
             success: true,
             message: 'Role deleted successfully'
         });
     }
     catch (error) {
-        console.error('Error deleting role:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error deleting role',
-            error: error.message || 'Unknown error',
-        });
+        res.status(500).json({ message: 'Error deleting user: ' + error.message });
     }
 });
 exports.deleteRoleController = deleteRoleController;

@@ -15,19 +15,22 @@ export class selectRoles {
   }
 
   // Update an existing role by id
-  static async updateRole(user: UserRoles) {
+  static async updateRole(user: UserRoles, userID:number) {
     return db('user_roles')
-      .where('id', user.id)
+      .where({id:userID})
       .update({ role_name: user.role_name, is_active: user.is_active, is_deleted: 0 });
   }
 
   // Delete a role by id
-  static async deleteRole(role: UserRoles) {
+  // This is your updated `deleteRole` method:
+  static async deleteRole(roleID: number, roleData: any) {
+    const { is_deleted_by } = roleData;
     return db('user_roles')
-      .where({id: role.id})
+      .where({ id: roleID })
       .update({
         is_deleted: 1,
-        is_deleted_by: role.is_deleted_by
+        is_deleted_by: is_deleted_by,
       });
   }
+  
 }
