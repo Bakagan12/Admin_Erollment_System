@@ -11,11 +11,20 @@ export const getRoles = async (): Promise<any[]> => {
     }
 }
 
-// Create a new role
-export const createRole = async (user: UserRoles): Promise<number[]> => {
+export const getRoleById = async (roleId: number): Promise<UserRoles> => {
     try {
-        const roleId = await selectRoles.createRole(user);
-        return roleId; // Returning the inserted ID of the new role
+        const role = await selectRoles.getRoleById(roleId);  // Fetch role by ID
+        return role;
+    } catch (err) {
+        throw new Error('Error fetching role by ID: ' + (err as Error).message);
+    }
+};
+
+// Create a new role
+export const createRole = async (user: UserRoles): Promise<number> => {
+    try {
+        const [roleId] = await selectRoles.createRole(user);
+        return roleId;
     } catch (err) {
         throw new Error('Error creating role: ' + (err as Error).message);
     }
@@ -32,9 +41,9 @@ export const updateRole = async (user: UserRoles, roleID: number): Promise<numbe
 }
 
 // Delete a role by id
-export const deleteRole = async (roleID: number, roleData: any): Promise<number> => {
+export const deleteRole = async (roleID: number, is_deleted_by: any): Promise<number> => {
     try {
-        const deletedCount = await selectRoles.deleteRole(roleID, roleData); // Pass roleID and roleData
+        const deletedCount = await selectRoles.deleteRole(roleID, is_deleted_by); // Pass roleID and roleData
         return deletedCount; // Return the count of deleted rows
     } catch (err) {
         throw new Error('Error deleting role: ' + (err as Error).message);

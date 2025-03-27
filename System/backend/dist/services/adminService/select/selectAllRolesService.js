@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoles = void 0;
+exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoleById = exports.getRoles = void 0;
 const selectAllRolesRepo_1 = require("../../../repository/adminRepository/select/selectAllRolesRepo");
 // Get all active roles
 const getRoles = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -22,11 +22,21 @@ const getRoles = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getRoles = getRoles;
+const getRoleById = (roleId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const role = yield selectAllRolesRepo_1.selectRoles.getRoleById(roleId); // Fetch role by ID
+        return role;
+    }
+    catch (err) {
+        throw new Error('Error fetching role by ID: ' + err.message);
+    }
+});
+exports.getRoleById = getRoleById;
 // Create a new role
 const createRole = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const roleId = yield selectAllRolesRepo_1.selectRoles.createRole(user);
-        return roleId; // Returning the inserted ID of the new role
+        const [roleId] = yield selectAllRolesRepo_1.selectRoles.createRole(user);
+        return roleId;
     }
     catch (err) {
         throw new Error('Error creating role: ' + err.message);
@@ -45,9 +55,9 @@ const updateRole = (user, roleID) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateRole = updateRole;
 // Delete a role by id
-const deleteRole = (roleID, roleData) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteRole = (roleID, is_deleted_by) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deletedCount = yield selectAllRolesRepo_1.selectRoles.deleteRole(roleID, roleData); // Pass roleID and roleData
+        const deletedCount = yield selectAllRolesRepo_1.selectRoles.deleteRole(roleID, is_deleted_by); // Pass roleID and roleData
         return deletedCount; // Return the count of deleted rows
     }
     catch (err) {

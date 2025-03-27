@@ -18,7 +18,7 @@ class selectRoles {
     // Get all active roles
     static getRoles() {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, db_1.default)('user_roles').select('role_name', 'is_active').where('is_active', '=', 1);
+            return (0, db_1.default)('user_roles').select('id', 'role_name', 'is_active').where('is_deleted', '!=', 1);
         });
     }
     // Create a new role
@@ -28,24 +28,36 @@ class selectRoles {
                 .insert({ role_name: role.role_name, is_active: role.is_active });
         });
     }
-    // Update an existing role by id
-    static updateRole(user, userID) {
+    static getRoleById(roleId) {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, db_1.default)('user_roles')
-                .where({ id: userID })
-                .update({ role_name: user.role_name, is_active: user.is_active, is_deleted: 0 });
+                .select('id', 'role_name', 'is_active')
+                .where({ id: roleId })
+                .first(); // Fetch a single role
+        });
+    }
+    // Update an existing role by id
+    static updateRole(user, roleID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, db_1.default)('user_roles')
+                .where({ id: roleID })
+                .update({
+                role_name: user.role_name,
+                is_active: user.is_active,
+                is_deleted: 0
+            });
         });
     }
     // Delete a role by id
     // This is your updated `deleteRole` method:
-    static deleteRole(roleID, roleData) {
+    static deleteRole(roleID, is_deleted_by) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { is_deleted_by } = roleData;
+            const { deleted_by } = is_deleted_by;
             return (0, db_1.default)('user_roles')
                 .where({ id: roleID })
                 .update({
                 is_deleted: 1,
-                is_deleted_by: is_deleted_by,
+                is_deleted_by: deleted_by,
             });
         });
     }

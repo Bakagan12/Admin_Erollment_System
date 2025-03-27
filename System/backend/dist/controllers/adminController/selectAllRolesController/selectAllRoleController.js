@@ -32,10 +32,11 @@ const createRoleController = (req, res) => __awaiter(void 0, void 0, void 0, fun
     try {
         const user = req.body; // Assuming the new role data is in the request body
         const roleId = yield (0, selectAllRolesService_1.createRole)(user);
+        const newRole = yield (0, selectAllRolesService_1.getRoleById)(roleId);
         res.status(201).json({
             success: true,
             message: 'Role created successfully',
-            data: { roleId },
+            data: newRole,
         });
     }
     catch (error) {
@@ -51,7 +52,7 @@ exports.createRoleController = createRoleController;
 // Update an existing role
 const updateRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const roleID = req.params;
+        const { roleID } = req.params;
         const role = req.body; // The updated role data from the request body
         const updatedCount = yield (0, selectAllRolesService_1.updateRole)(role, roleID);
         if (updatedCount === 0) {
@@ -61,8 +62,10 @@ const updateRoleController = (req, res) => __awaiter(void 0, void 0, void 0, fun
             });
             return;
         }
+        const updatedRole = yield (0, selectAllRolesService_1.getRoleById)(roleID);
         res.status(200).json({
             success: true,
+            updatedRole: updatedRole,
             message: 'Role updated successfully',
         });
     }
@@ -80,8 +83,8 @@ exports.updateRoleController = updateRoleController;
 const deleteRoleController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { roleID } = req.params;
-        const { roleData } = req.body;
-        const result = yield (0, selectAllRolesService_1.deleteRole)(Number(roleID), roleData);
+        const is_deleted_by = req.body;
+        const result = yield (0, selectAllRolesService_1.deleteRole)(Number(roleID), is_deleted_by);
         res.status(201).json({
             success: true,
             message: 'Role deleted successfully'

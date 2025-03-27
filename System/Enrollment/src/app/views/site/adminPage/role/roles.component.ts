@@ -9,6 +9,7 @@ import { UserRoleService } from '../../../../service/role/user-role.service';
 import { AuthService } from '../../../../service/auth/auth.service';
 
 interface Role {
+  id:number;
   role_name: string;
   is_active: string;
 }
@@ -25,15 +26,17 @@ export class AnnouncementComponent implements OnInit{
   isDeleteModalOpen: boolean = false; // For Delete Modal
   roleForm: FormGroup;
   roles: Role[] = [];
+  filteredRoles: Role[] = [];
   isTokenValid: boolean = true;
-  selectedRole: Role | null = null; // For storing the selected role when editing
-  selectedRoleToDelete: Role | null = null; // For storing the role to be deleted
+  selectedRole: Role | null = null;
+  selectedRoleToDelete: Role | null = null;
+  selectedStatus: string = '1';
 
   constructor(private fb: FormBuilder, private role: UserRoleService, private auth: AuthService) {
     // Initialize the form group
     this.roleForm = this.fb.group({
       roleName: ['', [Validators.required]],  // Role Name is required
-      status: ['active', [Validators.required]] // Status is required
+      status: ['1', [Validators.required]] // Status is required
     });
   }
 
@@ -42,7 +45,8 @@ export class AnnouncementComponent implements OnInit{
     if (token) {
       this.role.getAllRoles().subscribe(
         (roles: Role[] ) => {
-          this.roles = roles;  // Store all users in the 'roles' array
+          this.roles = roles;
+          this.filterRolesByStatus();
           console.log("User Roles", roles);
         },
         (error) => {
@@ -57,66 +61,104 @@ export class AnnouncementComponent implements OnInit{
       // this.router.navigate(['/auth/login']);
     }
   }
+// Method to filter roles based on selected status
+ filterRolesByStatus(): void {
+    this.filteredRoles = this.roles.filter(role => role.is_active === this.selectedStatus);
+  }
 
+// Method to handle status change and update the view
+onStatusChange(event: Event) {
+  const selectElement = event.target as HTMLSelectElement;
+  this.selectedStatus = selectElement.value;
+}
   openModal(): void {
     this.isModalOpen = true;
   }
 
   closeModal(): void {
     this.isModalOpen = false;
-    this.roleForm.reset({ status: 'active' }); // Reset the form, keeping the default status as 'active'
+    this.roleForm.reset({ status: 1 }); // Reset the form, keeping the default status as 'active'
   }
 
   saveRole(): void {
     if (this.roleForm.valid) {
-      const roleName = this.roleForm.value.roleName;
-      const roleStatus = this.roleForm.value.status;
+      const roleData = {
+        role_name: this.roleForm.value.roleName,
+        is_active: this.roleForm.value.status
+      };
 
-      // Handle save logic here (e.g., make an API call to save the role)
-      console.log('Role Name:', roleName);
-      console.log('Role Status:', roleStatus);
+      this.role.createRole(roleData).subscribe(
+        (response) => {
+          console.log('Role created:', response);
 
-      this.closeModal();  // Close the modal after saving
+          // Extracting the newly created role data
+          const newRole = {
+            id: response.data.id,
+            role_name: response.data.role_name,
+            is_active: response.data.is_active
+          };
+          if(newRole.is_active === 1){
+             // Add the newly created role to the roles array
+             this.roles.push(newRole);
+
+             // Automatically display the new role without page refresh
+             this.roles = [...this.roles];
+
+
+             setTimeout(() => {
+               document.querySelector(`#role-${newRole.id}`)?.scrollIntoView({ behavior: 'smooth' });
+             }, 200);
+          }
+      // Close the modal after saving
+      this.closeModal();
+
+
+        },
+        (error) => {
+          console.error('Error creating role:', error);
+        }
+      );
     }
-  }
-
-  // Method to open Edit Modal and populate the form with the role data
-  openEditModal(role: Role): void {
-    this.selectedRole = role;
-    this.roleForm.setValue({
-      roleName: role.role_name,
-      status: role.is_active === '1' ? 'active' : 'inactive' // Mapping is_active to 'active'/'inactive'
-    });
-    this.isEditModalOpen = true;
-  }
-
-  // Method to close Edit Modal
-  closeEditModal(): void {
-    this.isEditModalOpen = false;
-    this.selectedRole = null;  // Clear selected role when closing
   }
 
   // Method to update the role (could include an API call)
   updateRole(): void {
     if (this.roleForm.valid && this.selectedRole) {
-      const updatedRole = {
-        ...this.selectedRole,
+      const updatedRoleData = {
         role_name: this.roleForm.value.roleName,
-        is_active: this.roleForm.value.status === 'active' ? '1' : '0'
+        is_active: this.roleForm.value.status
       };
+      // console.log(updatedRoleData);
 
-      // Handle update logic here (e.g., make an API call to update the role)
-      console.log('Updated Role:', updatedRole);
+      this.role.updateRole(this.selectedRole.id.toString(), updatedRoleData).subscribe(
+        (response) => {
+          const updatedRole = {
+            id: response.updatedRole.id,
+            role_name: response.updatedRole.role_name,
+            is_active: response.updatedRole.is_active
+          };
+          console.log('Role updated:', updatedRole);
 
-      // Update the roles array with the modified role
-      const index = this.roles.findIndex(role => role === this.selectedRole);
-      if (index !== -1) {
-        this.roles[index] = updatedRole;
-      }
+          const index = this.roles.findIndex(role => role.id === this.selectedRole?.id);
 
-      this.closeEditModal();  // Close the edit modal after updating
+          if (index !== -1) {
+            this.roles[index] = updatedRole;
+          }
+          this.roles = [...this.roles];
+
+          setTimeout(() => {
+            document.querySelector(`#role-${updatedRole.id}`)?.scrollIntoView({ behavior: 'smooth' });
+          }, 200);
+
+          this.closeEditModal();
+        },
+        (error) => {
+          console.error('Error updating role:', error);
+        }
+      );
     }
   }
+
 
   // Method to open Delete Modal and store the role to be deleted
   openDeleteModal(role: Role): void {
@@ -133,13 +175,38 @@ export class AnnouncementComponent implements OnInit{
   // Method to delete the role
   deleteRole(): void {
     if (this.selectedRoleToDelete) {
-      // Handle delete logic here (e.g., make an API call to delete the role)
-      console.log('Role deleted:', this.selectedRoleToDelete);
+      this.role.deleteRole(this.selectedRoleToDelete.id).subscribe(
+        (response) => {
+          console.log('Role deleted:', response);
 
-      // Remove the role from the roles array
-      this.roles = this.roles.filter(role => role !== this.selectedRoleToDelete);
+          // Remove the role from the roles array
+          this.roles = this.roles.filter(role => role !== this.selectedRoleToDelete);
 
-      this.closeDeleteModal();  // Close the delete modal after deleting
+          this.closeDeleteModal();  // Close the delete modal after deleting
+        },
+        (error) => {
+          console.error('Error deleting role:', error);
+        }
+      );
     }
   }
+
+
+
+  // Method to open Edit Modal and populate the form with the role data
+  openEditModal(role: Role): void {
+    this.selectedRole = role;
+    this.roleForm.setValue({
+      roleName: role.role_name,
+      status: role.is_active
+    });
+    this.isEditModalOpen = true;
+  }
+
+  // Method to close Edit Modal
+  closeEditModal(): void {
+    this.isEditModalOpen = false;
+    this.selectedRole = null;  // Clear selected role when closing
+  }
+
 }

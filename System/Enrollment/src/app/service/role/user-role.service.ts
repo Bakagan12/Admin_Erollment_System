@@ -38,10 +38,12 @@ export class UserRoleService {
   }
 
   // Delete a role
-  deleteRole(roleId: string): Observable<any> {
+  deleteRole(roleId: number): Observable<any> {
     const token = this.auth.getToken();
+    const userId = this.auth.getUserId();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put<any>(`${this.deleteRoleUrl}/${roleId}`, { headers });
+    const body = { is_deleted_by: userId };
+    return this.http.put<any>(`${this.deleteRoleUrl}/${roleId}`, body, { headers });
     // Or use DELETE if backend uses DELETE:
     // return this.http.delete<any>(`${this.deleteRoleUrl}/${roleId}`, { headers });
   }

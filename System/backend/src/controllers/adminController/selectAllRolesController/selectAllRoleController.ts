@@ -1,4 +1,4 @@
-import { getRoles, createRole, updateRole, deleteRole } from "../../../services/adminService/select/selectAllRolesService";
+import { getRoles, createRole, updateRole, deleteRole, getRoleById } from "../../../services/adminService/select/selectAllRolesService";
 import { UserRoles } from "../../../models/userRoles";
 
 // Get all active roles
@@ -21,10 +21,11 @@ export const createRoleController = async (req: any, res: any): Promise<void> =>
     try {
         const user: UserRoles = req.body;  // Assuming the new role data is in the request body
         const roleId = await createRole(user);
+        const newRole = await getRoleById(roleId);
         res.status(201).json({
             success: true,
             message: 'Role created successfully',
-            data: { roleId },
+            data: newRole,
         });
     } catch (error: any) {
         console.error('Error creating role:', error);
@@ -39,10 +40,10 @@ export const createRoleController = async (req: any, res: any): Promise<void> =>
 // Update an existing role
 export const updateRoleController = async (req: any, res: any): Promise<void> => {
     try {
-        const roleID = req.params;
+        const {roleID} = req.params;
         const role: UserRoles = req.body;  // The updated role data from the request body
         const updatedCount = await updateRole(role, roleID);
-        
+
         if (updatedCount === 0) {
             res.status(404).json({
                 success: false,
@@ -50,9 +51,10 @@ export const updateRoleController = async (req: any, res: any): Promise<void> =>
             });
             return;
         }
-
+        const updatedRole = await getRoleById(roleID);
         res.status(200).json({
             success: true,
+            updatedRole: updatedRole,
             message: 'Role updated successfully',
         });
     } catch (error: any) {
@@ -69,8 +71,8 @@ export const updateRoleController = async (req: any, res: any): Promise<void> =>
 export const deleteRoleController = async (req: any, res: any): Promise<void> => {
     try {
         const { roleID } = req.params;
-        const { roleData } = req.body;
-        const result = await deleteRole(Number(roleID), roleData);
+        const is_deleted_by  = req.body;
+        const result = await deleteRole(Number(roleID), is_deleted_by);
         res.status(201).json({
             success: true,
             message: 'Role deleted successfully'

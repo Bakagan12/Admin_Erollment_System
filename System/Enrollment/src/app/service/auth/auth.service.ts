@@ -37,6 +37,11 @@ export class AuthService {
         }
       })
     );
+
+  }
+  getUserId(): number | null {
+    const userRoleId = localStorage.getItem('user_role_id');
+    return userRoleId ? Number(userRoleId) : null;
   }
 
   logout(): void {

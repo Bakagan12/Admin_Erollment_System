@@ -17,6 +17,13 @@ interface User {
   password: string;
   role_name: string;
   role_status: string;
+  suffix: string;
+  dob: string;
+  gender: string;
+  address: string;
+  contact_number: string;
+  emergency_contact_name: string;
+  emergency_contact_number: string;
 }
 
 @Component({
@@ -36,15 +43,23 @@ export class UserRolesComponent implements OnInit {
   constructor(private userService: AllUsersService, private auth: AuthService, private fb: FormBuilder) {
     // Initialize form
     this.userForm = this.fb.group({
-      first_name: ['', Validators.required],
-      middle_name: [''],
-      last_name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      firstName: ['', Validators.required],
+      middleName: [''],
+      lastName: ['', Validators.required],
+      Suffix: ['', Validators.required],
+      Email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
-      password: ['', Validators.required],
-      role_name: ['', Validators.required],
-      role_status: ['active']
+      Password: ['', this.isEditModalOpen ? [] : [Validators.required]], // Optional for edit
+      confirmPassword: ['', this.isEditModalOpen ? [] : [Validators.required]], // Optional for edit
+      DOB: [''], // Add the dob control here
+      Gender: ['', Validators.required],
+      Address: [''],
+      contactNumber: ['', Validators.required],
+      emergencyContactName: [''],
+      emergencyContactNumber: ['']
     });
+
+
   }
 
   ngOnInit(): void {
@@ -66,9 +81,25 @@ export class UserRolesComponent implements OnInit {
   // Open Edit Modal and populate form
   openEditModal(user: User): void {
     this.selectedUser = user;
+    this.userForm.setValue({
+      firstName: user.first_name,
+      middleName: user.middle_name,
+      lastName: user.last_name,
+      Suffix: user.suffix || '',
+      username: user.username,
+      Email: user.email,
+      Password: '', // Add this line
+      confirmPassword: '', // Add this line
+      DOB: user.dob || '', // Make sure to set the dob value
+      Gender: user.gender || '',
+      Address: user.address || '',
+      contactNumber: user.contact_number || '',
+      emergencyContactName: user.emergency_contact_name || '',
+      emergencyContactNumber: user.emergency_contact_number || ''
+    });
     this.isEditModalOpen = true;
-    this.userForm.patchValue(user); // Pre-populate the form fields
   }
+
 
   // Close Edit Modal
   closeEditModal(): void {
