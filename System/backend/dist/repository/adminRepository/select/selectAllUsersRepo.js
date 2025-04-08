@@ -23,14 +23,14 @@ class UserService {
                 .leftJoin('status', 'gen_users.status_id', 'status.id')
                 .leftJoin('user_roles', 'gen_users.user_role_id', 'user_roles.id')
                 .leftJoin('persons', 'gen_users.person_id', 'persons.id')
-                .leftJoin('suffix', 'suffix.id', 'persons.suffix_id')
+                .join('suffix', 'suffix.id', 'persons.suffix_id')
                 .where('user_roles.is_active', '=', 1)
                 .where('gen_users.is_deleted', '=', 0)
                 .where(function () {
                 this.where('gen_users.is_deleted', '=', 0)
                     .orWhereNull('gen_users.is_deleted');
             })
-                .select('gen_users.id as user_id', 'gen_users.username', 'gen_users.password', 'persons.first_name', 'persons.middle_name', 'persons.last_name', 'persons.email', 'user_roles.role_name', 'status.status_name', 'gen_users.created_at', 'gen_users.is_deleted_by', 'status.status_name');
+                .select('gen_users.id as user_id', 'gen_users.username', 'gen_users.password', 'persons.first_name', 'persons.middle_name', 'persons.last_name', 'gen_users.gen_user_email', 'user_roles.role_name', 'status.status_name', 'gen_users.created_at', 'gen_users.is_deleted_by', 'status.status_name');
         });
     }
     // Create a new user
@@ -116,41 +116,43 @@ class UserService {
     // Update an existing user
     static updateUser(userId, userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { username, gen_user_email, password, first_name, middle_name, last_name, suffix_id, date_of_birth, gender, address, contact_no, emergency_contact_name, emergency_contact_no, user_role_id, status_id } = userData;
+            const { first_name, middle_name, last_name, gen_user_email, username, password, } = userData;
             try {
-                // First, update the person's information if there are changes
-                const updatedPerson = yield (0, db_1.default)('persons')
-                    .where('id', '=', userData.id) // assuming userData contains the person's ID
-                    .update({
-                    first_name,
-                    middle_name,
-                    last_name,
-                    suffix_id,
-                    date_of_birth,
-                    gender,
-                    address,
-                    contact_no,
-                    emergency_contact_name,
-                    emergency_contact_no,
-                });
-                // If password is provided, hash it, otherwise keep the existing password
-                let updatedPassword = password;
+                // If password is provided, hash it
+                let updatedPassword = undefined;
                 if (password) {
                     updatedPassword = yield bcrypt.hash(password, 10);
                 }
-                // Update the user record
-                const updatedUser = yield (0, db_1.default)('gen_users')
-                    .where('id', '=', userId)
-                    .update({
+                // 1. Update gen_users
+                const userUpdateData = {
                     gen_user_email,
                     username,
-                    password: updatedPassword, // Update only if password is provided
-                    person_id: userData.person_id, // person_id should come from userData
-                    user_role_id,
-                    status_id,
+                    password,
                     updated_at: new Date()
+                };
+                if (updatedPassword) {
+                    userUpdateData.password = updatedPassword;
+                }
+                yield (0, db_1.default)('gen_users')
+                    .where('id', '=', userId)
+                    .update(userUpdateData);
+                // 2. Retrieve person_id from gen_users
+                const user = yield (0, db_1.default)('gen_users')
+                    .select('person_id')
+                    .where('id', '=', userId)
+                    .first();
+                if (!user || !user.person_id) {
+                    throw new Error('User or person_id not found');
+                }
+                // 3. Update persons table
+                yield (0, db_1.default)('persons')
+                    .where('id', '=', user.person_id)
+                    .update({
+                    first_name,
+                    middle_name,
+                    last_name
                 });
-                return updatedUser;
+                return { message: "User updated successfully!" };
             }
             catch (error) {
                 console.error("Error updating user:", error);
