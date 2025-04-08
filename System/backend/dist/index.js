@@ -53,6 +53,7 @@ const createPaymentRoutes_1 = __importDefault(require("./routes/requestsRoute/cr
 const allRole_1 = __importDefault(require("./routes/adminRoute/allRole/allRole"));
 const allUserRoutes_1 = __importDefault(require("./routes/adminRoute/allUserRoute/allUserRoutes"));
 const allStudentRoute_1 = __importDefault(require("./routes/adminRoute/allStudentRoute/allStudentRoute"));
+const suffix_1 = __importDefault(require("./routes/adminRoute/suffixRoute/suffix"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
@@ -75,6 +76,7 @@ app.use('/admin', (0, roleAuth_1.roleAuth)([1, 2]), selectUserRoute_1.default);
 app.use('/user', allRole_1.default);
 app.use('/all_user', allUserRoutes_1.default);
 app.use('/all_student', allStudentRoute_1.default);
+app.use('/person', suffix_1.default);
 app.use('/principal', (0, roleAuth_1.roleAuth)([3, 4]), termRoute_1.default);
 app.use('/api', paymentRoute_1.default);
 app.use('/payment', createPaymentRoutes_1.default);

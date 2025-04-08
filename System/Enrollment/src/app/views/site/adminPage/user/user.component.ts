@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SideBarComponent } from '../admin-dashboard/side-bar/side-bar.component';
 import { HeaderComponent } from '../admin-dashboard/header/header.component';
@@ -9,10 +9,11 @@ import { AuthService } from '../../../../service/auth/auth.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 interface User {
+  user_id: string;
   first_name: string;
   middle_name: string;
   last_name: string;
-  email: string;
+  gen_user_email: string;
   username: string;
   password: string;
   role_name: string;
@@ -37,26 +38,30 @@ export class UserRolesComponent implements OnInit {
   isEditModalOpen: boolean = false;
   isDeleteModalOpen: boolean = false;
   users: User[] = [];
-  selectedUser: User | null = null; // Store selected user for edit or delete
+  selectedUser: User | null = null;
+  selectedUserId: string ='';
   userForm: FormGroup;
 
-  constructor(private userService: AllUsersService, private auth: AuthService, private fb: FormBuilder) {
+  constructor(private userService: AllUsersService, private auth: AuthService, private fb: FormBuilder, private router: Router) {
     // Initialize form
     this.userForm = this.fb.group({
-      firstName: ['', Validators.required],
-      middleName: [''],
-      lastName: ['', Validators.required],
-      Suffix: ['', Validators.required],
-      Email: ['', [Validators.required, Validators.email]],
+      first_name: ['', Validators.required],
+      middle_name: [''],
+      last_name: ['', Validators.required],
+      suffix: [''],
+      dob: ['', Validators.required],
+      gender: ['', Validators.required],
+      address: ['', Validators.required],
+      gen_user_email: ['', [Validators.required, Validators.email]],
+      contact_number: ['', Validators.required],
+      emergency_contact_name: ['', Validators.required],
+      emergency_contact_number: ['', Validators.required],
       username: ['', Validators.required],
-      Password: ['', this.isEditModalOpen ? [] : [Validators.required]], // Optional for edit
-      confirmPassword: ['', this.isEditModalOpen ? [] : [Validators.required]], // Optional for edit
-      DOB: [''], // Add the dob control here
-      Gender: ['', Validators.required],
-      Address: [''],
-      contactNumber: ['', Validators.required],
-      emergencyContactName: [''],
-      emergencyContactNumber: ['']
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm_password: ['', Validators.required],
+      user_role_id: 12,
+      status_id: 1,
+      is_deleted: 0
     });
 
 
@@ -68,6 +73,7 @@ export class UserRolesComponent implements OnInit {
       this.userService.getAllUsers().subscribe(
         (users: User[]) => {
           this.users = users;
+          console.log(users);
         },
         (error) => {
           console.error('Error fetching users:', error);
@@ -81,21 +87,25 @@ export class UserRolesComponent implements OnInit {
   // Open Edit Modal and populate form
   openEditModal(user: User): void {
     this.selectedUser = user;
+    this.selectedUserId = user.user_id;
     this.userForm.setValue({
-      firstName: user.first_name,
-      middleName: user.middle_name,
-      lastName: user.last_name,
-      Suffix: user.suffix || '',
-      username: user.username,
-      Email: user.email,
-      Password: '', // Add this line
-      confirmPassword: '', // Add this line
-      DOB: user.dob || '', // Make sure to set the dob value
-      Gender: user.gender || '',
-      Address: user.address || '',
-      contactNumber: user.contact_number || '',
-      emergencyContactName: user.emergency_contact_name || '',
-      emergencyContactNumber: user.emergency_contact_number || ''
+      first_name: user.first_name || '',
+      middle_name: user.middle_name || '',
+      last_name: user.last_name || '',
+      suffix: user.suffix || '',
+      username: user.username || '',
+      gen_user_email: user.gen_user_email || '',
+      password: user.password || '',
+      confirm_password: user.password || '',
+      dob: user.dob || '',
+      gender: user.gender || '',
+      address: user.address || '',
+      contact_number: user.contact_number || '',
+      emergency_contact_name: user.emergency_contact_name || '',
+      emergency_contact_number: user.emergency_contact_number || '',
+      user_role_id: 12,
+      status_id: 1,
+      is_deleted: 0
     });
     this.isEditModalOpen = true;
   }
@@ -121,32 +131,76 @@ export class UserRolesComponent implements OnInit {
   updateUser(): void {
     if (this.userForm.valid && this.selectedUser) {
       const updatedUser = { ...this.selectedUser, ...this.userForm.value };
+
+      // Log the updated user data
+      console.log('Updated User:', updatedUser);
+
       // Call service to update the user
-      console.log('User updated:', updatedUser);
-      this.isEditModalOpen = false;
+      this.userService.updateUser(updatedUser.user_id, updatedUser).subscribe({
+        next: () => {
+          alert('User updated successfully!');
+          this.getAllUsers(); // Refresh the user list
+          this.isEditModalOpen = false;
+        },
+        error: (err) => {
+          console.error('Update failed:', err);
+          alert('Failed to update user.');
+        }
+      });
+    } else {
+      alert('Form is invalid');
     }
   }
 
+
   // Open Delete Modal
   openDeleteModal(user: User): void {
-    this.selectedUser = user;
+    this.selectedUserId = user.user_id;
     this.isDeleteModalOpen = true;
   }
 
   // Close Delete Modal
   closeDeleteModal(): void {
     this.isDeleteModalOpen = false;
+    this.selectedUserId = '';
     this.selectedUser = null;
   }
 
+  getAllUsers(): void {
+    this.userService.getAllUsers().subscribe({
+      next: (data) => this.users = data,
+      error: (err) => console.error('Error fetching users:', err)
+    });
+  }
+
   // Delete User
-  deleteUser(): void {
-    if (this.selectedUser) {
-      // Call service to delete user
-      console.log('User deleted:', this.selectedUser);
-      this.isDeleteModalOpen = false;
-      // Optionally, remove the user from the list
-      this.users = this.users.filter(u => u !== this.selectedUser);
+  deleteUser(userId: string): void {
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.userService.deleteUser(userId).subscribe({
+        next: () => this.getAllUsers(),
+        error: (err) => console.error('Delete failed:', err)
+      });
     }
+  }
+  onSubmit() {
+    if (this.userForm.invalid) return;
+
+    const userData = this.userForm.value;
+    if (userData.password !== userData.confirm_password) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    this.userService.createUser(userData).subscribe({
+      next: (res) => {
+        alert('User registered successfully!');
+        this.userForm.reset();
+        this.router.navigate(['/admin/dashboard/user/role']); // optional redirect
+      },
+      error: (err) => {
+        console.error('Error creating user:', err);
+        alert('Failed to register user.');
+      }
+    });
   }
 }

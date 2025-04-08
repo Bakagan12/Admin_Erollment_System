@@ -18,7 +18,7 @@ export class ChangePasswordComponent {
   constructor(private fb: FormBuilder, private router: Router) {
     // Initialize the form group
     this.changePasswordForm = this.fb.group({
-      username: [{ value: '', disabled: true }, Validators.required],  // Username field is readonly
+      // username: [{ value: '', disabled: true }, Validators.required],  // Username field is readonly
       newPassword: ['', [Validators.required, Validators.minLength(5)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(5)]]
     });

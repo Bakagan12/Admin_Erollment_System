@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserController = exports.updateUserController = exports.createUserController = exports.fetchAllUsers = void 0;
 const selectAllUserService_1 = require("../../../services/adminService/select/selectAllUserService");
+const selectAllUsersRepo_1 = require("../../../repository/adminRepository/select/selectAllUsersRepo");
 const fetchAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Call the service to fetch users
@@ -32,7 +33,10 @@ const createUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
     try {
         const userData = req.body;
         const newUser = yield (0, selectAllUserService_1.createUser)(userData);
-        res.status(201).json(newUser);
+        res.status(201).json({
+            message: 'User created successfully',
+            user: newUser // Include the created user details
+        });
     }
     catch (err) {
         res.status(500).json({ message: 'Error creating user: ' + err.message });
@@ -45,7 +49,18 @@ const updateUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const { userId } = req.params;
         const userData = req.body;
         const updatedUser = yield (0, selectAllUserService_1.updateUser)(Number(userId), userData);
-        res.status(200).json(["User updated Successfully! "]);
+        // Send back the updated user data
+        if (updatedUser) {
+            const fetchedUser = yield selectAllUsersRepo_1.UserService.getAllUsers(); // Assuming you'll fetch all users and return
+            const updatedUserDetails = fetchedUser.find(user => user.user_id === Number(userId));
+            res.status(200).json({
+                message: "User updated successfully!",
+                data: updatedUserDetails
+            });
+        }
+        else {
+            res.status(404).json({ message: "User not found!" });
+        }
     }
     catch (err) {
         res.status(500).json({ message: 'Error updating user: ' + err.message });
@@ -53,12 +68,28 @@ const updateUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.updateUserController = updateUserController;
 // Controller to soft delete a user
+// Controller to soft delete a user
 const deleteUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
         const { deletedBy } = req.body;
+        // Fetch the user details before deletion
+        const fetchedUser = yield selectAllUsersRepo_1.UserService.getAllUsers();
+        const userToDelete = fetchedUser.find(user => user.user_id === Number(userId));
+        if (!userToDelete) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        // Perform the soft delete
         const deletedUser = yield (0, selectAllUserService_1.deleteUser)(Number(userId), deletedBy);
-        res.status(200).json("User deleted Successfully!");
+        if (deletedUser) {
+            res.status(200).json({
+                message: "User deleted successfully!",
+                data: userToDelete // Send back the user data that was deleted
+            });
+        }
+        else {
+            res.status(500).json({ message: "Error deleting user!" });
+        }
     }
     catch (err) {
         res.status(500).json({ message: 'Error deleting user: ' + err.message });

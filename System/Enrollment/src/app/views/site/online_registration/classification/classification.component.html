@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Choices UI</title>
-</head>
+
 <style>
   body{
     background-color: rgb(161, 196, 243);
@@ -17,43 +11,40 @@
     <h1 class="text-2xl">Register</h1>
 
     <!-- Form Starts Here -->
-    <form class="grid grid-cols-1">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 gap-6">
+      <!-- Row 1 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- First Name -->
-        <div class="flex flex-col items-center">
-          <label for="first_name" class="text-lg">First Name</label>
-          <input type="text" id="first_name" name="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
+        <div class="flex flex-col">
+          <label class="text-lg">First Name</label>
+          <input formControlName="first_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter First Name" />
         </div>
 
-        <!-- M.I. -->
-        <div class="flex flex-col w-25 items-center">
-          <label for="middle_name" class="text-lg">Middle Name</label>
-          <input type="text" id="middle_name" name="middle_name" class="border rounded p-2 w-full mt-2" placeholder="Middle Name">
+        <div class="flex flex-col">
+          <label class="text-lg">Middle Name</label>
+          <input formControlName="middle_name" type="text" class="border rounded p-2 mt-2" placeholder="Middle Name" />
         </div>
 
-        <!-- Last Name -->
-        <div class="flex flex-col items-center">
-          <label for="last_name" class="text-lg">Last Name</label>
-          <input type="text" id="last_name" name="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
+        <div class="flex flex-col">
+          <label class="text-lg">Last Name</label>
+          <input formControlName="last_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Last Name" />
         </div>
 
-        <!-- Suffix -->
-        <div class="flex flex-col items-center">
-          <label for="suffix" class="text-lg">Suffix</label>
-          <input type="text" id="suffix" name="suffix" class="border rounded p-2 w-full mt-2" placeholder="Enter Suffix">
+        <div class="flex flex-col">
+          <label class="text-lg">Suffix</label>
+          <input formControlName="suffix" type="text" class="border rounded p-2 mt-2" placeholder="Enter Suffix" />
         </div>
-
       </div>
+
+      <!-- Row 2 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Date of Birth -->
-        <div class="flex flex-col items-center">
-          <label for="dob" class="text-lg">Date of Birth</label>
-          <input type="date" id="dob" name="dob" class="border rounded p-2 w-full mt-2">
+        <div class="flex flex-col">
+          <label class="text-lg">Date of Birth</label>
+          <input formControlName="dob" type="date" class="border rounded p-2 mt-2" />
         </div>
-        <!-- Gender -->
-        <div class="flex flex-col items-center">
-          <label for="gender" class="text-lg">Gender</label>
-          <select id="gender" name="gender" class="border rounded p-2 w-full mt-2">
+
+        <div class="flex flex-col">
+          <label class="text-lg">Gender</label>
+          <select formControlName="gender" class="border rounded p-2 mt-2">
             <option value="">Select Gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -61,61 +52,54 @@
           </select>
         </div>
 
-        <!-- Address -->
-        <div class="flex flex-col items-center">
-          <label for="address" class="text-lg">Address</label>
-          <input type="text" id="address" name="address" class="border rounded p-2 w-full mt-2" placeholder="Enter Address">
+        <div class="flex flex-col">
+          <label class="text-lg">Address</label>
+          <input formControlName="address" type="text" class="border rounded p-2 mt-2" placeholder="Enter Address" />
         </div>
 
-        <!-- Email -->
-        <div class="flex flex-col items-center">
-          <label for="email" class="text-lg">Email</label>
-          <input type="email" id="email" name="email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
+        <div class="flex flex-col">
+          <label class="text-lg">Email</label>
+          <input formControlName="gen_user_email" type="gen_user_email" class="border rounded p-2 mt-2" placeholder="Enter gen_user_email" />
         </div>
-
       </div>
+
+      <!-- Row 3 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Contact Number -->
-          <div class="flex flex-col items-center">
-            <label for="contact_number" class="text-lg">Contact Number</label>
-            <input type="tel" id="contact_number" name="contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Contact Number">
-          </div>
-            <!-- Emergency Contact Name -->
-          <div class="flex flex-col items-center">
-            <label for="emergency_contact_name" class="text-lg">Emergency Contact Name</label>
-            <input type="text" id="emergency_contact_name" name="emergency_contact_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Name">
-          </div>
-
-          <!-- Emergency Contact Number -->
-          <div class="flex flex-col items-center">
-            <label for="emergency_contact_number" class="text-lg">Emergency Contact Number</label>
-            <input type="tel" id="emergency_contact_number" name="emergency_contact_number" class="border rounded p-2 w-full mt-2" placeholder="Enter Emergency Contact Number">
-          </div>
-
-
-
-
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-         <!-- Password -->
-         <div class="flex flex-col items-center">
-          <label for="password" class="text-lg">Password</label>
-          <input type="password" id="password" name="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
+        <div class="flex flex-col">
+          <label class="text-lg">Contact Number</label>
+          <input formControlName="contact_number" type="tel" class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
         </div>
 
-        <!-- Confirm Password -->
-        <div class="flex flex-col items-center">
-          <label for="confirm_password" class="text-lg">Confirm Password</label>
-          <input type="password" id="confirm_password" name="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Confirm Password">
+        <div class="flex flex-col">
+          <label class="text-lg">Emergency Contact Name</label>
+          <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Name" />
         </div>
-        <!-- Register Button -->
-        <div class="col-span-full flex justify-center mt-6">
-          <button type="submit" class="bg-blue-500 text-white p-2 rounded w-64">Register</button>
+
+        <div class="flex flex-col">
+          <label class="text-lg">Emergency Contact Number</label>
+          <input formControlName="emergency_contact_number" type="tel" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
         </div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col">
+          <label class="text-lg">Password</label>
+          <input formControlName="password" type="password" class="border rounded p-2 mt-2" placeholder="Enter Password" />
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-lg">Confirm Password</label>
+          <input formControlName="confirm_password" type="password" class="border rounded p-2 mt-2" placeholder="Confirm Password" />
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-center mt-8">
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded w-64" [disabled]="registerForm.invalid">
+          Register
+        </button>
       </div>
     </form>
-    <!-- Form Ends Here -->
   </div>
   <!-- <app-footer></app-footer> -->
-</body>
-</html>

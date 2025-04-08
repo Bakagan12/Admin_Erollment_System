@@ -15,6 +15,7 @@ import createPaymentRoute from './routes/requestsRoute/createPaymentRoutes';
 import roles from './routes/adminRoute/allRole/allRole';
 import fetchallUser from './routes/adminRoute/allUserRoute/allUserRoutes';
 import Student from './routes/adminRoute/allStudentRoute/allStudentRoute';
+import Suffix from './routes/adminRoute/suffixRoute/suffix';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/admin', roleAuth([1,2]), selectUserRoute);
 app.use('/user', roles);
 app.use('/all_user', fetchallUser);
 app.use('/all_student', Student);
+app.use('/person', Suffix);
 
 app.use('/principal', roleAuth([3, 4]), termRoute);
 

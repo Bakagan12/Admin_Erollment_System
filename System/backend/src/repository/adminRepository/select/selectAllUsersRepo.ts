@@ -11,6 +11,7 @@ export class UserService {
             .leftJoin('persons', 'gen_users.person_id', 'persons.id')
             .leftJoin('suffix', 'suffix.id', 'persons.suffix_id')
             .where('user_roles.is_active', '=', 1)
+            .where('gen_users.is_deleted', '=', 0)
             .where(function() {
                 this.where('gen_users.is_deleted', '=', 0)
                     .orWhereNull('gen_users.is_deleted');
@@ -31,12 +32,57 @@ export class UserService {
             );
     }
 
+     // Create a new user
     // Create a new user
-    static async createUser(userData: any) {
-        const { first_name, middle_name, last_name, suffix_id, date_of_birth, gender, address, contact_no, emergency_contact_name, emergency_contact_no, password, gen_user_email, user_role_id, status_id } = userData;
-        try {
+static async createUser(userData: any) {
+    const {
+        first_name,
+        middle_name,
+        last_name,
+        suffix_id,
+        date_of_birth,
+        gender,
+        address,
+        contact_no,
+        emergency_contact_name,
+        emergency_contact_no,
+        password,
+        gen_user_email,
+        user_role_id,
+        status_id,
+        is_deleted
+     } = userData;
+
+    try {
+        // Start a transaction
+        return await db.transaction(async (trx) => {
+            // Generate the initial username based on first_name and last_name
+            let username = `${first_name}.${last_name}`.toLowerCase();
+
+            // Check if the username already exists in the database
+            let existingUser = await trx('gen_users').where({ username }).first();
+
+            // Check if the email already exists in the database
+            let existingEmail = await trx('gen_users').where({ gen_user_email }).first();
+
+            // If the username or email exists, throw an error and abort
+            if (existingUser) {
+                throw new Error(`Username "${username}" already exists. Please choose a different one.`);
+            }
+            if (existingEmail) {
+                throw new Error(`Email "${gen_user_email}" already exists. Please use a different email.`);
+            }
+
+            // If the username exists, append a number or make a unique username
+            let counter = 1;
+            while (existingUser) {
+                username = `${first_name}.${last_name}${counter}`.toLowerCase(); // Append a counter
+                existingUser = await trx('gen_users').where({ username }).first();
+                counter++;
+            }
+
             // Insert into persons table
-            const person = await db('persons').insert({
+            const [personId] = await trx('persons').insert({
                 first_name,
                 middle_name,
                 last_name,
@@ -48,29 +94,49 @@ export class UserService {
                 emergency_contact_name,
                 emergency_contact_no,
                 email: gen_user_email,
-            });
-            const personId = person[0];
-    
+            });  // Return the new person ID
+
             // Hash the password before inserting
             const hashedPassword = await bcrypt.hash(password, 10);
-    
-            // Insert into gen_users table
-            const newUser = await db('gen_users').insert({
-                username: `${first_name}.${last_name}`, // Assuming username is a combination of first and last name
+
+            // Insert into gen_users table with the unique username
+            const [newUserId] = await trx('gen_users').insert({
+                username, // Use the generated unique username
                 gen_user_email,
                 password: hashedPassword, // Save the hashed password
                 person_id: personId,
                 user_role_id,
                 status_id,
+                is_deleted,
                 created_at: new Date()
-            });
-    
-            return newUser;
-        } catch (error) {
-            console.error("Error creating user:", error);
-            throw new Error('Error creating user');
-        }
+            }); // Optionally return the inserted user id
+
+            // Return the newly created user's details (without password)
+            return {
+                id: newUserId,
+                username,
+                gen_user_email,
+                first_name,
+                middle_name,
+                last_name,
+                date_of_birth,
+                gender,
+                address,
+                contact_no,
+                user_role_id,
+                status_id,
+                is_deleted,
+                created_at: new Date()
+            };
+        });
+    } catch (error: any) {
+        console.error("Error creating user:", error);
+        throw new Error(error.message);
     }
+}
+
+
+
 
     // Update an existing user
     static async updateUser(userId: number, userData: any) {
