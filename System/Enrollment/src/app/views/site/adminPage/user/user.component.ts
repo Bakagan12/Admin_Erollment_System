@@ -128,29 +128,32 @@ export class UserRolesComponent implements OnInit {
   }
 
   // Update User (for Edit Modal)
-  updateUser(): void {
-    if (this.userForm.valid && this.selectedUser) {
-      const updatedUser = { ...this.selectedUser, ...this.userForm.value };
+  updateUser (): void {
+    // if (this.userForm.invalid) {
+    //     alert('Please fill in all required fields correctly.');
+    //     return;
+    // }
 
-      // Log the updated user data
-      console.log('Updated User:', updatedUser);
+    const updatedUser  = { ...this.userForm.value };
 
-      // Call service to update the user
-      this.userService.updateUser(updatedUser.user_id, updatedUser).subscribe({
+    // If password is empty, do not send it to the backend
+    if (!updatedUser .password) {
+        delete updatedUser .password; // Remove password if not provided
+    }
+
+    // Call the service to update the user
+    this.userService.updateUser (this.selectedUserId, updatedUser ).subscribe({
         next: () => {
-          alert('User updated successfully!');
-          this.getAllUsers(); // Refresh the user list
-          this.isEditModalOpen = false;
+            alert('User  updated successfully!');
+            this.getAllUsers(); // Refresh the user list
+            this.isEditModalOpen = false;
         },
         error: (err) => {
-          console.error('Update failed:', err);
-          alert('Failed to update user.');
+            console.error('Update failed:', err);
+            alert(`Failed to update user. Error: ${err.error?.message || 'Unknown error'}`);
         }
-      });
-    } else {
-      alert('Form is invalid');
-    }
-  }
+    });
+}
 
 
   // Open Delete Modal
@@ -177,7 +180,11 @@ export class UserRolesComponent implements OnInit {
   deleteUser(userId: string): void {
     if (confirm('Are you sure you want to delete this user?')) {
       this.userService.deleteUser(userId).subscribe({
-        next: () => this.getAllUsers(),
+        next: () => {
+          this.getAllUsers();
+          this.closeDeleteModal();
+        },
+
         error: (err) => console.error('Delete failed:', err)
       });
     }
