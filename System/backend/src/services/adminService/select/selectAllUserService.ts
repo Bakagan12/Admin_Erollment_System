@@ -25,6 +25,7 @@ export const updateUser = async (userId: number, userData: any): Promise<any> =>
         const updatedUser = await UserService.updateUser(userId, userData);
         return updatedUser;
     } catch (err) {
+        console.error('Service error in updateUser:', err);
         throw new Error('Error updating user: ' + (err as Error).message);
     }
 };

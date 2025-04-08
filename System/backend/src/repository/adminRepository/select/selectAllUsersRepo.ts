@@ -140,12 +140,12 @@ static async createUser(userData: any) {
 
     // Update an existing user
     static async updateUser(userId: number, userData: any) {
-        const { username, gen_user_email, password, first_name, middle_name, last_name, suffix_id, date_of_birth, gender, address, contact_no, emergency_contact_name, emergency_contact_no, user_role_id, status_id } = userData;
-    
+        const {username, gen_user_email, password, first_name, middle_name, last_name, suffix_id, date_of_birth, gender, address, contact_no, emergency_contact_name, emergency_contact_no, user_role_id, status_id } = userData;
+
         try {
             // First, update the person's information if there are changes
             const updatedPerson = await db('persons')
-                .where('id', '=', userData.person_id) // assuming userData contains the person's ID
+                .where('id', '=', userData.id) // assuming userData contains the person's ID
                 .update({
                     first_name,
                     middle_name,

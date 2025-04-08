@@ -120,7 +120,7 @@ class UserService {
             try {
                 // First, update the person's information if there are changes
                 const updatedPerson = yield (0, db_1.default)('persons')
-                    .where('id', '=', userData.person_id) // assuming userData contains the person's ID
+                    .where('id', '=', userData.id) // assuming userData contains the person's ID
                     .update({
                     first_name,
                     middle_name,

@@ -129,11 +129,6 @@ export class UserRolesComponent implements OnInit {
 
   // Update User (for Edit Modal)
   updateUser (): void {
-    // if (this.userForm.invalid) {
-    //     alert('Please fill in all required fields correctly.');
-    //     return;
-    // }
-
     const updatedUser  = { ...this.userForm.value };
 
     // If password is empty, do not send it to the backend

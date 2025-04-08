@@ -37,7 +37,7 @@ export const updateUserController = async (req: Request, res: Response): Promise
         const { userId } = req.params;
         const userData = req.body;
         const updatedUser = await updateUser(Number(userId), userData);
-        
+
         // Send back the updated user data
         if (updatedUser) {
             const fetchedUser = await UserService.getAllUsers(); // Assuming you'll fetch all users and return

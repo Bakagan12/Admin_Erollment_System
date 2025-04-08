@@ -39,6 +39,7 @@ const updateUser = (userId, userData) => __awaiter(void 0, void 0, void 0, funct
         return updatedUser;
     }
     catch (err) {
+        console.error('Service error in updateUser:', err);
         throw new Error('Error updating user: ' + err.message);
     }
 });
