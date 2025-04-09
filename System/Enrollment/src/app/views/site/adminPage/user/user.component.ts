@@ -55,11 +55,11 @@ export class UserRolesComponent implements OnInit {
   emergency_contact_numberError: string = '';
   passwordsError: string = '';
 
-    //Pagination
-    currentPage: number = 1;
-    itemsPerPage: number = 10;
-    totalPages: number = 1;
-    paginatedRoles: User[] = [];
+  //Pagination
+  paginatedUsers: User[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 1;
 
   //for search
   filteredUsers: any[] = [];
@@ -89,46 +89,38 @@ export class UserRolesComponent implements OnInit {
 
 
   }
-  updatePaginatedRoles(): void {
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.userService.getAllUsers().subscribe(
+      (users: User[]) => {
+        this.users = users;
+        this.setupPagination();
+        this.filterUsers();
+      },
+      (error) => {
+        console.error('Error fetching users:', error);
+      }
+    );
+  }
+  setupPagination(): void {
+    this.totalPages = Math.ceil(this.users.length / this.itemsPerPage);
+    this.updatePaginatedUsers();
+  }
+  updatePaginatedUsers(): void {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    this.paginatedRoles = this.users.slice(start, end);
+    this.paginatedUsers = this.users.slice(start, end);
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.updatePaginatedRoles();
+      this.updatePaginatedUsers();
     }
-  }
-
-  setupPagination(): void {
-    this.totalPages = Math.ceil(this.users.length / this.itemsPerPage);
-    this.updatePaginatedRoles();
-  }
-  ngOnInit(): void {
-    this.loadUsers();
-    const token = this.auth.getToken();
-    if (token) {
-      this.userService.getAllUsers().subscribe(
-        (users: User[]) => {
-          this.users = users;
-          this.setupPagination();
-          console.log(users);
-        },
-        (error) => {
-          console.error('Error fetching users:', error);
-        }
-      );
-    } else {
-      console.error('No token found');
-    }
-  }
-  loadUsers() {
-    this.userService.getAllUsers().subscribe((res: any[]) => {
-      this.users = res;
-      this.filteredUsers = res;
-    });
   }
 
   filterUsers(): void {
@@ -140,6 +132,7 @@ export class UserRolesComponent implements OnInit {
       (user.middle_name && user.middle_name.toLowerCase().includes(term)) ||
       user.gen_user_email.toLowerCase().includes(term)
     );
+    this.setupPagination();
   }
 
   // Open Edit Modal and populate form

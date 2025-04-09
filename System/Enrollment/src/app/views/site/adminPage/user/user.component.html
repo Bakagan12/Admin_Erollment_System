@@ -37,39 +37,70 @@
         class="form-control"
       />
     </div> -->
-    <div class="flex flex-col lg:flex-row justify-between flex-column">
-      <table class="min-w-full bg-white">
-        <thead>
-          <tr>
-            <th class="py-2 px-4 border-b text-left">First Name</th>
-            <th class="py-2 px-4 border-b text-left">M.I</th>
-            <th class="py-2 px-4 border-b text-left">Last Name</th>
-            <th class="py-2 px-4 border-b text-left">Email</th>
-            <th class="py-2 px-4 border-b text-left">Username</th>
-            <th class="py-2 px-4 border-b text-left">Password</th>
-            <th class="py-2 px-4 border-b text-left">Role</th>
-            <th class="py-2 px-4 border-b text-left">Status</th>
-            <th class="py-2 px-4 border-b justify-left text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td class="hidden">{{user.user_id}}</td>
-            <td class="py-2 px-4 border-b">{{ user.first_name }}</td>
-            <td class="py-2 px-4 border-b">{{ user.middle_name ? (user.middle_name[0] + '.') : '' }}</td>
-            <td class="py-2 px-4 border-b">{{ user.last_name }}</td>
-            <td class="py-2 px-4 border-b">{{ user.gen_user_email }}</td>
-            <td class="py-2 px-4 border-b">{{ user.username }}</td>
-            <td class="py-2 px-4 border-b">{{ user.password }}</td>
-            <td class="py-2 px-4 border-b">{{ user.role_name }}</td>
-            <td class="py-2 px-4 border-b">{{ user.role_status || 'Active' }}</td>
-            <td class="py-2 px-4 border-b flex flex-col justify-center items-center text-center">
-              <button (click)="openEditModal(user)" class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
-              <button (click)="openDeleteModal(user)" class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="flex flex-col lg:flex-row justify-between w-full">
+      <div class="overflow-x-auto w-full">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th class="py-2 px-4 border-b text-left">First Name</th>
+              <th class="py-2 px-4 border-b text-left">M.I</th>
+              <th class="py-2 px-4 border-b text-left">Last Name</th>
+              <th class="py-2 px-4 border-b text-left">Email</th>
+              <th class="py-2 px-4 border-b text-left">Username</th>
+              <th class="py-2 px-4 border-b text-left">Password</th>
+              <th class="py-2 px-4 border-b text-left">Role</th>
+              <th class="py-2 px-4 border-b text-left">Status</th>
+              <th class="py-2 px-4 border-b text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of paginatedUsers">
+              <td class="hidden">{{user.user_id}}</td>
+              <td class="py-2 px-4 border-b">{{ user.first_name }}</td>
+              <td class="py-2 px-4 border-b">{{ user.middle_name ? (user.middle_name[0] + '.') : '' }}</td>
+              <td class="py-2 px-4 border-b">{{ user.last_name }}</td>
+              <td class="py-2 px-4 border-b">{{ user.gen_user_email }}</td>
+              <td class="py-2 px-4 border-b">{{ user.username }}</td>
+              <td class="py-2 px-4 border-b">{{ user.password }}</td>
+              <td class="py-2 px-4 border-b">{{ user.role_name }}</td>
+              <td class="py-2 px-4 border-b">{{ user.role_status || 'Active' }}</td>
+              <td class="py-2 px-4 border-b flex flex-col justify-center items-center text-center">
+                <button (click)="openEditModal(user)" class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
+                <button (click)="openDeleteModal(user)" class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4"></td>
+              <td colspan="5" class="mt-4 flex justify-center space-x-2">
+                <button
+                  (click)="goToPage(currentPage - 1)"
+                  [disabled]="currentPage === 1"
+                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                  Previous
+                </button>
+
+                <button
+                  *ngFor="let page of [].constructor(totalPages); let i = index"
+                  (click)="goToPage(i + 1)"
+                  [class.bg-blue-500]="currentPage === i + 1"
+                  [class.text-white]="currentPage === i + 1"
+                  class="px-4 py-2 border rounded hover:bg-blue-400 hover:text-white">
+                  {{ i + 1 }}
+                </button>
+
+                <button
+                  (click)="goToPage(currentPage + 1)"
+                  [disabled]="currentPage === totalPages"
+                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                  Next
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   </div>
 
