@@ -56,15 +56,15 @@
           <tbody>
             <tr *ngFor="let user of paginatedUsers">
               <td class="hidden">{{user.user_id}}</td>
-              <td class="py-2 px-4 border-b">{{ user.first_name }}</td>
-              <td class="py-2 px-4 border-b">{{ user.middle_name ? (user.middle_name[0] + '.') : '' }}</td>
-              <td class="py-2 px-4 border-b">{{ user.last_name }}</td>
-              <td class="py-2 px-4 border-b">{{ user.gen_user_email }}</td>
-              <td class="py-2 px-4 border-b">{{ user.username }}</td>
-              <td class="py-2 px-4 border-b">{{ user.password }}</td>
-              <td class="py-2 px-4 border-b">{{ user.role_name }}</td>
-              <td class="py-2 px-4 border-b">{{ user.role_status || 'Active' }}</td>
-              <td class="py-2 px-4 border-b flex flex-col justify-center items-center text-center">
+              <td class="py-2 px-4 border-b truncate ">{{ user.first_name }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.middle_name ? (user.middle_name[0] + '.') : '' }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.last_name }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.gen_user_email }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.username }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.password }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.role_name }}</td>
+              <td class="py-2 px-4 border-b truncate">{{ user.role_status || 'Active' }}</td>
+              <td class="py-2 px-4 border-b truncate flex flex-col justify-center items-center text-center">
                 <button (click)="openEditModal(user)" class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
                 <button (click)="openDeleteModal(user)" class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
               </td>
