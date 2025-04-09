@@ -27,7 +27,7 @@ export const createUserController = async (req: Request, res: Response): Promise
             user: newUser  // Include the created user details
         });
     } catch (err) {
-        res.status(500).json({ message: 'Error creating user: ' + (err as Error).message });
+        res.status(500).json({ message:(err as Error).message });
     }
 };
 

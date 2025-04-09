@@ -39,7 +39,7 @@ const createUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
     }
     catch (err) {
-        res.status(500).json({ message: 'Error creating user: ' + err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 exports.createUserController = createUserController;

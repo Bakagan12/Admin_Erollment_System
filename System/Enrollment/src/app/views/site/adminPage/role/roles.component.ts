@@ -32,6 +32,12 @@ export class AnnouncementComponent implements OnInit{
   selectedRoleToDelete: Role | null = null;
   selectedStatus: string = '1';
 
+  //Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 1;
+  paginatedRoles: Role[] = [];
+
   constructor(private fb: FormBuilder, private role: UserRoleService, private auth: AuthService) {
     // Initialize the form group
     this.roleForm = this.fb.group({
@@ -39,7 +45,23 @@ export class AnnouncementComponent implements OnInit{
       status: ['1', [Validators.required]] // Status is required
     });
   }
+  updatePaginatedRoles(): void {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.paginatedRoles = this.roles.slice(start, end);
+  }
 
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePaginatedRoles();
+    }
+  }
+
+  setupPagination(): void {
+    this.totalPages = Math.ceil(this.roles.length / this.itemsPerPage);
+    this.updatePaginatedRoles();
+  }
   ngOnInit(): void {
     const token = this.auth.getToken();
     if (token) {
@@ -47,6 +69,7 @@ export class AnnouncementComponent implements OnInit{
         (roles: Role[] ) => {
           this.roles = roles;
           this.filterRolesByStatus();
+          this.setupPagination();
           console.log("User Roles", roles);
         },
         (error) => {
@@ -64,6 +87,7 @@ export class AnnouncementComponent implements OnInit{
 // Method to filter roles based on selected status
  filterRolesByStatus(): void {
     this.filteredRoles = this.roles.filter(role => role.is_active === this.selectedStatus);
+    this.setupPagination();
   }
 
 // Method to handle status change and update the view

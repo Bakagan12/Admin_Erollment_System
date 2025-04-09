@@ -28,6 +28,15 @@
       <h1 class="text-2xl font-bold mb-6">Users List</h1>
       <button (click)="openModal = true" class="bg-blue-500 text-white rounded p-2">Create User</button>
     </div>
+    <!-- <div class="mb-6">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="filterUsers()"
+        placeholder="Search users..."
+        class="form-control"
+      />
+    </div> -->
     <div class="flex flex-col lg:flex-row justify-between flex-column">
       <table class="min-w-full bg-white">
         <thead>
@@ -39,7 +48,7 @@
             <th class="py-2 px-4 border-b text-left">Username</th>
             <th class="py-2 px-4 border-b text-left">Password</th>
             <th class="py-2 px-4 border-b text-left">Role</th>
-            <th class="py-2 px-4 border-b" text-left>Status</th>
+            <th class="py-2 px-4 border-b text-left">Status</th>
             <th class="py-2 px-4 border-b justify-left text-center">Actions</th>
           </tr>
         </thead>
@@ -68,9 +77,16 @@
 
   <!-- Create User Modal -->
   <div *ngIf="openModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
-    <div class="text-center space-y-6 col-12 bg-blue-100 p-5 w-100 ml-10 mr-10 mt-10 rounded-lg">
-      <button (click)="openModal = false" class="absolute ml-[400px] mb-10 bg-gray-300 opacity-70 rounded-tr-lg rounded-bl-lg top-[139px] text-blue-900 p-2 text-5xl">&times;</button>
+    <div class="relative text-center space-y-6 col-12 bg-blue-100 p-5 w-100 mx-10 mt-10 rounded-lg">
+      <!-- Close Button -->
+      <button (click)="openModal = false"
+              class="absolute top-0 right-0 mt-2 mr-2 bg-blue-300 hover:opacity-80 rounded-tr-lg rounded-bl-lg text-blue-900 p-2 text-3xl shadow">
+        &times;
+      </button>
       <h1 class="text-4xl font-semibold">Register</h1>
+      <div *ngIf="formError" class="text-red-900 text-xl rounded-lg bg-red-300 text-center mt-2">
+        {{ formError }}
+      </div>
 
       <!-- Form Starts Here -->
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 gap-6">
@@ -79,21 +95,33 @@
           <div class="flex flex-col">
             <label class="text-lg">First Name</label>
             <input formControlName="first_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter First Name" />
+            <div *ngIf="first_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ first_nameError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Middle Name</label>
             <input formControlName="middle_name" type="text" class="border rounded p-2 mt-2" placeholder="Middle Name" />
+            <div *ngIf="middle_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ middle_nameError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Last Name</label>
             <input formControlName="last_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Last Name" />
+            <div *ngIf="last_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ last_nameError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Suffix</label>
             <input formControlName="suffix" type="text" class="border rounded p-2 mt-2" placeholder="Enter Suffix" />
+            <div *ngIf="suffixError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ suffixError }}
+            </div>
           </div>
         </div>
 
@@ -102,6 +130,9 @@
           <div class="flex flex-col">
             <label class="text-lg">Date of Birth</label>
             <input formControlName="dob" type="date" class="border rounded p-2 mt-2" />
+            <div *ngIf="dobError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ dobError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
@@ -112,16 +143,25 @@
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
+            <div *ngIf="genderError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ genderError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Address</label>
             <input formControlName="address" type="text" class="border rounded p-2 mt-2" placeholder="Enter Address" />
+            <div *ngIf="addressError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ addressError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Email</label>
-            <input formControlName="gen_user_email" type="gen_user_email" class="border rounded p-2 mt-2" placeholder="Enter gen_user_email" />
+            <input formControlName="gen_user_email" type="email" class="border rounded p-2 mt-2" placeholder="Enter Email"/>
+            <div *ngIf="gen_user_emailError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ gen_user_emailError }}
+            </div>
           </div>
         </div>
 
@@ -129,17 +169,26 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div class="flex flex-col">
             <label class="text-lg">Contact Number</label>
-            <input formControlName="contact_number" type="tel" class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
+            <input formControlName="contact_number" type="tel" (keypress)="allowNumbersOnly($event)" maxlength="20" class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
+            <div *ngIf="contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ contact_numberError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Emergency Contact Name</label>
             <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Name" />
+            <div *ngIf="emergency_contact_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ emergency_contact_nameError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
             <label class="text-lg">Emergency Contact Number</label>
-            <input formControlName="emergency_contact_number" type="tel" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
+            <input formControlName="emergency_contact_number" type="tel"  (keypress)="allowNumbersOnly($event)" maxlength="20" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
+            <div *ngIf="emergency_contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ emergency_contact_numberError }}
+            </div>
           </div>
         </div>
 
@@ -148,6 +197,9 @@
           <div class="flex flex-col">
             <label class="text-lg">Password</label>
             <input formControlName="password" type="password" class="border rounded p-2 mt-2" placeholder="Enter Password" />
+            <div *ngIf="passwordsError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ passwordsError }}
+            </div>
           </div>
 
           <div class="flex flex-col">
@@ -158,7 +210,7 @@
 
         <!-- Submit Button -->
         <div class="flex justify-center mt-8">
-          <button type="submit" class="bg-blue-500 text-white p-2 rounded w-64" [disabled]="userForm.invalid">
+          <button type="submit" class="bg-blue-500 hover:opacity-80 text-white p-2 rounded w-64">
             Register
           </button>
         </div>
@@ -192,11 +244,22 @@
           <div class="flex flex-col items-center">
             <label for="email" class="text-lg">Email</label>
             <input type="email" id="email" formControlName="gen_user_email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
+            <div
+            class="text-red-500 text-sm mt-1 self-start"
+            *ngIf="userForm.get('gen_user_email')?.touched && userForm.get('gen_user_email')?.invalid"
+          >
+            <span *ngIf="userForm.get('gen_user_email')?.errors?.['required']">
+              Email is required.
+            </span>
+            <span *ngIf="userForm.get('gen_user_email')?.errors?.['email']">
+              Please enter a valid email address.
+            </span>
+          </div>
           </div>
 
           <div class="flex flex-col items-center">
             <label for="username" class="text-lg">Username</label>
-            <input type="text" id="username" formControlName="username" class="border rounded p-2 w-full mt-2" placeholder="Enter Username">
+            <input type="email" id="username" formControlName="username" class="border rounded p-2 w-full mt-2" placeholder="Enter Username">
           </div>
 
           <div class="flex flex-col items-center">
@@ -216,56 +279,6 @@
       </form>
     </div>
   </div>
-<!-- <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
-  <div class="text-center space-y-6 col-12 bg-blue-100 p-5 w-100 ml-10 mr-10 mt-10 rounded-lg">
-    <button (click)="closeEditModal()" class="absolute top-2 right-2 text-red-600 text-xl">&times;</button>
-    <h1 class="text-2xl">Edit User</h1>
-    <form (ngSubmit)="updateUser()" [formGroup]="userForm" class="grid grid-cols-1">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="flex flex-col items-center">
-          <label for="first_name" class="text-lg">First Name</label>
-          <input type="text" id="first_name" formControlName="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
-        </div>
-
-        <div class="flex flex-col w-25 items-center">
-          <label for="mi" class="text-lg">M.I.</label>
-          <input type="text" id="mi" formControlName="middle_name" class="border rounded p-2 w-full mt-2" placeholder="M.I.">
-        </div>
-
-        <div class="flex flex-col items-center">
-          <label for="last_name" class="text-lg">Last Name</label>
-          <input type="text" id="last_name" formControlName="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
-        </div>
-
-        <div class="flex flex-col items-center">
-          <label for="email" class="text-lg">Email</label>
-          <input type="email" id="email" formControlName="gen_user_email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
-        </div>
-
-        <div class="flex flex-col items-center">
-          <label for="username" class="text-lg">Username</label>
-          <input type="text" id="username" formControlName="username" class="border rounded p-2 w-full mt-2" placeholder="Enter Username">
-        </div>
-
-        <div class="flex flex-col items-center">
-          <label for="password" class="text-lg">Password</label>
-          <input type="password" id="password" formControlName="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
-        </div>
-        <div class="flex flex-col items-center">
-          <label for="confirm_password" class="text-lg">Confirm Password</label>
-          <input type="password" id="confirm_password" formControlName="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Enter Confirm  Password">
-        </div>
-      </div>
-
-      <div class="flex justify-between mt-6">
-        <button type="button" (click)="closeEditModal()" class="bg-red-500 text-white text-xl p-2 rounded w-32">Cancel</button>
-        <button type="submit" (click)="updateUser()" class="bg-blue-500 hover:opacity-90 text-white text-xl p-2 rounded w-32">Save</button>
-      </div>
-    </form>
-  </div>
-</div> -->
-
-
 
 
   <!-- Delete Modal -->

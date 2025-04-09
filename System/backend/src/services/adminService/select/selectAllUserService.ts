@@ -15,7 +15,7 @@ export const createUser = async (userData: any): Promise<any> => {
         const newUser = await UserService.createUser(userData);
         return newUser;
     } catch (err) {
-        throw new Error('Error creating user: ' + (err as Error).message);
+        throw new Error((err as Error).message);
     }
 };
 

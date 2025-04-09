@@ -28,7 +28,7 @@ const createUser = (userData) => __awaiter(void 0, void 0, void 0, function* () 
         return newUser;
     }
     catch (err) {
-        throw new Error('Error creating user: ' + err.message);
+        throw new Error(err.message);
     }
 });
 exports.createUser = createUser;

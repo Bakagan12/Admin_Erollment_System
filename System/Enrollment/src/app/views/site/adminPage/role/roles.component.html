@@ -30,7 +30,7 @@
         </thead>
         <tbody>
           <!-- an email symbol => &#64; -->
-          <ng-container *ngFor="let role of roles; let i = index">
+          <ng-container *ngFor="let role of paginatedRoles; let i = index">
             <tr *ngIf="role.is_active == selectedStatus" [id]="'role-' + role.id" class="role-item">
               <td class="py-2 px-4 border-b" style="display: none;">{{ role.id }}</td>
               <td class="py-2 px-4 border-b {{ role.is_active == '1' ? 'Active' : 'Inactive' }}">
@@ -46,6 +46,30 @@
             </tr>
           </ng-container>
         </tbody>
+        <div class="mt-4 flex justify-center space-x-2">
+          <button
+            (click)="goToPage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+            Previous
+          </button>
+
+          <button
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            (click)="goToPage(i + 1)"
+            [class.bg-blue-500]="currentPage === i + 1"
+            [class.text-white]="currentPage === i + 1"
+            class="px-4 py-2 border rounded hover:bg-blue-400 hover:text-white">
+            {{ i + 1 }}
+          </button>
+
+          <button
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+            Next
+          </button>
+        </div>
       </table>
     </div>
 

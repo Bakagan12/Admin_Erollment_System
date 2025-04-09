@@ -9,7 +9,7 @@ export class UserService {
             .leftJoin('status', 'gen_users.status_id', 'status.id')
             .leftJoin('user_roles', 'gen_users.user_role_id', 'user_roles.id')
             .leftJoin('persons', 'gen_users.person_id', 'persons.id')
-            .join('suffix', 'suffix.id', 'persons.suffix_id')
+            .leftJoin('suffix', 'suffix.id', 'persons.suffix_id')
             .where('user_roles.is_active', '=', 1)
             .where('gen_users.is_deleted', '=', 0)
             .where(function() {

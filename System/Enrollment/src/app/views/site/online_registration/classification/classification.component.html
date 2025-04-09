@@ -17,21 +17,33 @@
         <div class="flex flex-col">
           <label class="text-lg">First Name</label>
           <input formControlName="first_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter First Name" />
+          <div *ngIf="first_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ first_nameError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Middle Name</label>
           <input formControlName="middle_name" type="text" class="border rounded p-2 mt-2" placeholder="Middle Name" />
+          <div *ngIf="middle_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ middle_nameError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Last Name</label>
           <input formControlName="last_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Last Name" />
+          <div *ngIf="last_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ last_nameError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Suffix</label>
           <input formControlName="suffix" type="text" class="border rounded p-2 mt-2" placeholder="Enter Suffix" />
+          <div *ngIf="suffixError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ suffixError }}
+          </div>
         </div>
       </div>
 
@@ -40,6 +52,9 @@
         <div class="flex flex-col">
           <label class="text-lg">Date of Birth</label>
           <input formControlName="dob" type="date" class="border rounded p-2 mt-2" />
+          <div *ngIf="dobError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ dobError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
@@ -50,16 +65,25 @@
             <option value="female">Female</option>
             <option value="other">Other</option>
           </select>
+          <div *ngIf="genderError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ genderError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Address</label>
           <input formControlName="address" type="text" class="border rounded p-2 mt-2" placeholder="Enter Address" />
+          <div *ngIf="addressError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ addressError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Email</label>
           <input formControlName="gen_user_email" type="gen_user_email" class="border rounded p-2 mt-2" placeholder="Enter gen_user_email" />
+          <div *ngIf="gen_user_emailError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ gen_user_emailError }}
+          </div>
         </div>
       </div>
 
@@ -67,17 +91,26 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="flex flex-col">
           <label class="text-lg">Contact Number</label>
-          <input formControlName="contact_number" type="tel" class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
+          <input formControlName="contact_number" type="tel" (keypress)="allowNumbersOnly($event)" maxlength="20"  class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
+          <div *ngIf="contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ contact_numberError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Emergency Contact Name</label>
           <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Name" />
+          <div *ngIf="emergency_contact_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ emergency_contact_nameError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
           <label class="text-lg">Emergency Contact Number</label>
-          <input formControlName="emergency_contact_number" type="tel" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
+          <input formControlName="emergency_contact_number" (keypress)="allowNumbersOnly($event)" maxlength="20"  type="tel" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
+          <div *ngIf="emergency_contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ emergency_contact_numberError }}
+          </div>
         </div>
       </div>
 
@@ -86,6 +119,9 @@
         <div class="flex flex-col">
           <label class="text-lg">Password</label>
           <input formControlName="password" type="password" class="border rounded p-2 mt-2" placeholder="Enter Password" />
+          <div *ngIf="passwordsError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ passwordsError }}
+          </div>
         </div>
 
         <div class="flex flex-col">
@@ -96,7 +132,7 @@
 
       <!-- Submit Button -->
       <div class="flex justify-center mt-8">
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded w-64" [disabled]="registerForm.invalid">
+        <button type="submit" class="bg-blue-500 hover:opacity-80 text-white p-2 rounded w-64">
           Register
         </button>
       </div>
