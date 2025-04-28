@@ -1,16 +1,12 @@
-
 import { Router } from 'express';
-import PaymentController from '../../controllers/request/paymentController';
+import { PaymentController } from '../../controllers/requestController/paymentController';
 
-const router: Router = Router();
+const router = Router();
+const secretKey = process.env.PAYMONGO_SECRET_KEY || 'sk_test_sxwmM4tDkWBMm1uy31WV8HEB';
+const paymentController = new PaymentController(secretKey);
 
-// Route to create a payment method
-router.post('/payment/create_payment_method', async (req, res, next) => {
-  try {
-    await PaymentController.createPaymentMethods(req, res);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post('/payment_intents', (req, res) => paymentController.createPaymentIntent(req, res));
+router.post('/payment_methods', (req, res) => paymentController.createPaymentMethod(req, res));
+router.post('/attach_payment_intent', (req, res) => paymentController.attachToPaymentIntent(req, res));
 
 export default router;

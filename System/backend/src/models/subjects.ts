@@ -1,4 +1,6 @@
-export class Subject{
+import db from "../config/db";
+
+export class Subjects{
     id?:number;
     subject_name: string;
     grade_level_id: number;
@@ -28,5 +30,23 @@ export class Subject{
         this.is_deleted_by = is_deleted_by;
         this.created_by = created_by;
         this.updated_by = updated_by;
+    }
+
+     static async getAll(): Promise<Subjects[]> {
+        const results = await db('subjects')
+                        .where({is_current: 1})
+                        .where({is_deleted: 0})
+                        .select('*');
+        return results.map(row => new Subjects(
+            row.id,
+            row.subject_name,
+            row.grade_level_id,
+            row.term_id,
+            row.is_current,
+            row.is_deleted,
+            row.is_deleted_by,
+            row.created_by,
+            row.updated_by
+        ));
     }
 }

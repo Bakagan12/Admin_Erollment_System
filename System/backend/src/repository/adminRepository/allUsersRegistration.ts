@@ -11,30 +11,34 @@ import { StudentMedicalHistory } from "../../models/studentMedicalHistory";
 
 
 export class allUserRepo{
-    // static async gegisterUsers():Promise<any>{
-    //     return db()
-    // }
     static async findAllUsers(): Promise<any> {
         return db('gen_users')
-            .join('persons', 'gen_users.person_id', 'persons.id')
-            .join('suffix', 'persons.suffix_id', 'suffix.id')
+            .leftJoin('persons', 'gen_users.person_id', 'persons.id')
+            .leftJoin('suffix', 'persons.suffix_id', 'suffix.id')
+            .leftJoin('gen_user_roles', 'gen_user_roles.gen_user_id', 'gen_users.id')
+            .leftJoin('user_roles', 'gen_user_roles.user_role_id', 'user_roles.id')
+            .leftJoin('status', 'gen_users.status_id', 'status.id')
             .select(
+                'gen_users.id',
                 'gen_users.username',
                 'gen_users.gen_user_email',
                 'gen_users.password',
                 'persons.first_name',
+                'persons.email',
                 'persons.middle_name',
                 'persons.last_name',
                 'suffix.suffix_name',
+                'user_roles.role_name',
+                'status.status_name'
             );
     }
     static async RegisterNewDepartmentalUser(user: GenUser, person: Persons): Promise<any> {
         let baseUsername = `${person.first_name.toLowerCase()}.${person.last_name.toLowerCase()}`;
         const generatedPassword = uuidv4();
-    
+
         let username = baseUsername;
         let counter = 1;
-    
+
         // Ensure unique username
         while (await db('gen_users').where('username', username).first()) {
             username = `${baseUsername}${counter}`;
@@ -60,7 +64,7 @@ export class allUserRepo{
                 citizenship: person.citizenship,
                 address: person.address,
                 email: person.email,
-                contact_no: person.contact_number,
+                contact_no: person.contact_no,
             });
     
             const personId = userdetails[0];
@@ -137,7 +141,7 @@ export class allUserRepo{
                     citizenship: person.citizenship,
                     address: person.address,
                     email: person.email,
-                    contact_no: person.contact_number,
+                    contact_no: person.contact_no,
                 });
                 const personId = personResult[0];
 
@@ -205,9 +209,7 @@ export class allUserRepo{
         
                 // Insert emergency contact record
                 const contactResult = await db('student_emergency_contact').insert({
-                    first_name: contact.first_name,
-                    middle_name: contact.middle_name,
-                    last_name: contact.last_name,
+                    name: contact.name,
                     suffix_id: contact.suffix_id,
                     address: contact.address,
                     contact_no: contact.contact_no,
@@ -236,12 +238,12 @@ export class allUserRepo{
 
                 return studentResult;
 
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                throw new Error(`Error creating User: ${error.message}`);
-            } else {
-                throw new Error('An unknown error occurred');
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    throw new Error(`Error creating User: ${error.message}`);
+                } else {
+                    throw new Error('An unknown error occurred');
+                }
             }
         }
-    }
 }
