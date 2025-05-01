@@ -34,7 +34,7 @@ export const updatedTermByUser = async (req:Request, res:Response, next:NextFunc
 
     }
 }
-export const deletedTermByUser = async (req:Request, res: Response, next: NextFunction): Promise <void> => {
+export const  deletedTermByUser = async (req:Request, res: Response, next: NextFunction): Promise <void> => {
     try{
         const term:Term = req.body;
 
