@@ -11,7 +11,7 @@ export class Persons {
     citizenship: string;
     address: number;
     email: string;
-    contact_no: string;
+    contact_number: string;
     student_guardian_id: number;
     student_emergency_contact_name: string;
     student_emergency_contact_no: string;
@@ -32,7 +32,7 @@ export class Persons {
         citizenship: string,
         address: number,
         email: string,
-        contact_no: string,
+        contact_number: string,
         student_guardian_id: number,
         student_emergency_contact_name: string,
         student_emergency_contact_no: string,
@@ -52,7 +52,7 @@ export class Persons {
         this.citizenship = citizenship;
         this.address = address;
         this.email = email;
-        this.contact_no = contact_no;
+        this.contact_number = contact_number;
         this.student_guardian_id = student_guardian_id;
         this.student_emergency_contact_name = student_emergency_contact_name;
         this.student_emergency_contact_no = student_emergency_contact_no;

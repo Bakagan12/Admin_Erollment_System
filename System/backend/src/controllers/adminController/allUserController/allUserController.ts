@@ -1,4 +1,4 @@
-import { registerNewDepartmentalUser, registerNewStudent, fetchAllUsers } from "../../../services/adminService/allUsers/allUsersService";
+import { registerNewDepartmentalUser, registerNewStudent } from "../../../services/adminService/allUsers/allUsersService";
 import { Persons } from "../../../models/persons";
 import { GenUser } from "../../../models/genUser";
 import { StudentGuardian } from "../../../models/studenGuardian";
@@ -9,15 +9,18 @@ import { Student } from "../../../models/students";
 import { StudentMedicalHistory } from "../../../models/studentMedicalHistory";
 import { Request, Response, NextFunction } from 'express';
 
-export const getAllUser = async (req: Request, res: Response):Promise<any> =>{
-    try {
-            const users = await fetchAllUsers();
-            res.status(200).json({ success: true, data: users });
-        } catch (err) {
-            res.status(500).json({ success: false, message: (err as Error).message });
-        }
-}
 
+// export class allUserController{
+//     static async allUsersController(req: any, res: any):Promise<void>{
+//         try {
+//             const users = await allUserService.getAllUsers();
+//             res.status(200).json(users);
+//         } catch (error) {
+//             res.status(500).json({ message: 'Error fetching users' });
+//         }
+//     }
+
+// }
 export const registerDepartmentalUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const person: Persons = req.body.person;

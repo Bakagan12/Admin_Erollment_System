@@ -1,5 +1,3 @@
-import db, { leftJoin } from "../config/db";
-
 export class Section{
     section_name: string;
     grade_level_id: number;
@@ -28,10 +26,5 @@ export class Section{
         this.created_by = created_by;
         this.updated_by = updated_by;
     }
-     static async getAll(): Promise<any[]> {
-        const results = await db('sections')
-            .leftJoin('grade_level', 'grade_level.id', 'sections.grade_level_id')
-            .select('sections.*', 'grade_level.level_name');
-        return results;
-     }
+
 }

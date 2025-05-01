@@ -1,23 +1,26 @@
 export class StudentEmergencyContact{
-   name: string;
+    first_name:string;
+    middle_name: string;
+    last_name: string;
     suffix_id: number;
     address: string;
     contact_no: string;
     email_address: string;
-    relationship: string;
     constructor(
-        name:string,
+        first_name:string,
+        middle_name:string,
+        last_name: string,
         suffix_id:number,
         address:string,
         contact_no:string,
-        email_address:string,
-        relationship: string,
+        email_address:string
     ){
-        this.name = name,
+        this.first_name = first_name,
+        this.middle_name = middle_name,
+        this.last_name = last_name,
         this.suffix_id = suffix_id,
         this. address = address,
         this.contact_no = contact_no,
-        this.email_address = email_address,
-        this.relationship = relationship
+        this.email_address = email_address
     }
 }

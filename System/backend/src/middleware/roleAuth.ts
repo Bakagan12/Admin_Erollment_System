@@ -6,7 +6,7 @@ const JWT_SECRET: string = config.JWT_SECRET || 'your_jwt_secret';
 
 interface DecodedToken {
     id: number;
-    role_id: number;
+    role: number;
 }
 
 export const roleAuth = (allowedRoles: number[]) => {
@@ -23,12 +23,12 @@ export const roleAuth = (allowedRoles: number[]) => {
         try {
             const decoded = jwt.verify(token, JWT_SECRET) as unknown as DecodedToken;
 
-            if (!decoded || !allowedRoles.includes(decoded.role_id)) {
+            if (!decoded || !allowedRoles.includes(decoded.role)) {
                 res.status(403).json({ message: 'Access denied' });
                 return;
             }
             // Added role-based check here
-            if (allowedRoles.includes(decoded.role_id)) {
+            if (allowedRoles.includes(decoded.role)) {
                 console.log('User has required role');
             }
             next();

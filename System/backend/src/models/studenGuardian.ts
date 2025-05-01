@@ -3,7 +3,6 @@ export class StudentGuardian{
     middle_name:string;
     last_name:string;
     suffix_id:number;
-    relationship: string;
     address:string;
     contact_no:string;
     email_address:string;
@@ -14,7 +13,6 @@ export class StudentGuardian{
         middle_name:string,
         last_name:string,
         suffix_id:number,
-        relationship: string,
         address:string,
         contact_no:string,
         email_address:string,
@@ -24,13 +22,11 @@ export class StudentGuardian{
             this.middle_name = middle_name;
             this.last_name = last_name;
             this.suffix_id = suffix_id;
-            this.relationship = relationship;
             this.address = address;
             this.contact_no = contact_no;
             this.email_address = email_address;
             this.occupation = occupation;
             this.occ_address = occ_address;
-            this.relationship = relationship;
 
         }
 }

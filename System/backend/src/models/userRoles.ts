@@ -1,4 +1,3 @@
-import db from "../config/db";
 export class UserRoles{
     id?: number;
     role_name:string;
@@ -24,18 +23,5 @@ export class UserRoles{
         this.is_deleted_by = is_deleted_by;
         this.created_by = created_by;
         this.updated_by = updated_by;
-    }
-
-    static async getAll(): Promise<UserRoles[]> {
-        const results = await db('user_roles').select('*');
-        return results.map(row => new UserRoles(
-            row.id,
-            row.role_name,
-            row.is_active,
-            row.is_deleted,
-            row.is_deleted_by,
-            row.created_by,
-            row.updated_by
-        ));
     }
 }

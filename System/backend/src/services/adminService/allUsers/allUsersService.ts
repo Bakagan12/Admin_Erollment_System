@@ -8,20 +8,6 @@ import { StudentEmergencyContact } from "../../../models/studentEmergencyContact
 import { Student } from "../../../models/students";
 import { StudentMedicalHistory } from "../../../models/studentMedicalHistory";
 
-export const fetchAllUsers = async (): Promise<any> => {
-    try {
-        const users = await allUserRepo.findAllUsers();
-        if (users.length === 0) {
-            throw new Error('No users found');
-        }
-        return users;
-    } catch (err) {
-        if (err instanceof Error) {
-            throw new Error(`Error fetching users: ${err.message}`);
-        }
-        throw new Error('Unknown error occurred while fetching users');
-    }
-};
 export const registerNewDepartmentalUser = async (person: Persons,  user: GenUser): Promise<{ message: string }> => {
     try {
         await allUserRepo.RegisterNewDepartmentalUser(user, person);

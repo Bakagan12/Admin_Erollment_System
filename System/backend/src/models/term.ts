@@ -1,5 +1,3 @@
-import db from "../config/db";
-
 export class Term{
     id?: number;
     term_name: string;
@@ -36,26 +34,5 @@ export class Term{
         this.is_deleted_by = is_deleted_by;
         this.created_by = created_by;
         this.updated_by = updated_by;
-    }
-
-    static async getAll(): Promise<Term[]> {
-        const results = await db('term')
-                        // .where({is_current: 1})
-                        .where({is_active: 1})
-                        .where({is_deleted: 0})
-                        .select('*');
-        return results.map(row => new Term(
-            row.id,
-            row.term_name,
-            new Date(row.date_start),
-            new Date(row.date_end),
-            row.is_current,
-            row.is_active,
-            row.is_deleted,
-            row.is_deleted_by,
-            row.is_deleted_at,
-            row.created_by,
-            row.updated_by
-        ));
     }
 }

@@ -8,7 +8,6 @@ const JWT_SECRET: string = config.JWT_SECRET || 'letmein';
 interface CustomJwtPayload extends JwtPayload {
     id: string;
     username: string;
-    role_id: number;
 }
 
 declare global {

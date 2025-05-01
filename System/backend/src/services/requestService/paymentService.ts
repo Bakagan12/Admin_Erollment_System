@@ -1,21 +1,22 @@
-import { PaymentRepository } from "../../repository/requestsRepo/paymentRepo";
+// services/paymentService.ts
+import PaymentRepository from '../../repository/requestsRepo/payment';
 
-export class PaymentService {
-  private paymentRepo: PaymentRepository;
+interface PaymentData {
+  card_number: string;
+  expiration_month: string;
+  expiration_year: string;
+  cvv: string;
+}
 
-  constructor(secretKey: string) {
-    this.paymentRepo = new PaymentRepository(secretKey);
-  }
-
-  async createPaymentIntent(amount: number, currency: string): Promise<any> {
-    return this.paymentRepo.createPaymentIntent(amount, currency);
-  }
-
-  async createPaymentMethod(paymentMethodData: any): Promise<any> {
-    return this.paymentRepo.createPaymentMethod(paymentMethodData);
-  }
-
-  async attachToPaymentIntent(paymentIntentId: string, paymentMethodId: string, returnUrl: string): Promise<any> {
-    return this.paymentRepo.attachToPaymentIntent(paymentIntentId, paymentMethodId, returnUrl);
+class PaymentService {
+  async createPaymentMethod(data: PaymentData): Promise<any> {
+    try {
+      const result = await PaymentRepository.createPaymentMethod(data);
+      return result;
+    } catch (error) {
+      throw new Error('Error in creating payment method: ' + (error as Error).message);
+    }
   }
 }
+
+export default new PaymentService();
