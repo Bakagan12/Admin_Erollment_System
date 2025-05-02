@@ -9,18 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerStudentUser = exports.registerDepartmentalUser = void 0;
+exports.registerStudentUser = exports.registerDepartmentalUser = exports.getAllUser = void 0;
 const allUsersService_1 = require("../../../services/adminService/allUsers/allUsersService");
-// export class allUserController{
-//     static async allUsersController(req: any, res: any):Promise<void>{
-//         try {
-//             const users = await allUserService.getAllUsers();
-//             res.status(200).json(users);
-//         } catch (error) {
-//             res.status(500).json({ message: 'Error fetching users' });
-//         }
-//     }
-// }
+const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield (0, allUsersService_1.fetchAllUsers)();
+        res.status(200).json({ success: true, data: users });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+exports.getAllUser = getAllUser;
 const registerDepartmentalUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const person = req.body.person;

@@ -17,28 +17,29 @@ router.delete('/delete/:id', deleteExistingAnnouncement);
 
 //fetch departmental users
 router.get('/get_all/users', allUser.getAllUser);
-router.get('/select/all_students',selectUsers.fetchAllStudents );
+router.get('/select/all_students', selectUsers.fetchAllStudents);
 
-router.get('/select/all_students/from_registrar',selectUsers.fetchAllStudentsFromRegistrar );
-router.get('/select/all_students/from_cashier',selectUsers.fetchAllStudentsFromCashier );
-router.get('/select/all_students/from_guidance',selectUsers.fetchAllStudentsFromGuidance );
+router.get('/select/all_students/from_registrar', selectUsers.fetchAllStudentsFromRegistrar);
+router.get('/select/all_students/from_cashier', selectUsers.fetchAllStudentsFromCashier);
+router.get('/select/all_students/from_guidance', selectUsers.fetchAllStudentsFromGuidance);
 
-router.patch('/select/all_students/from_guidance_pass',selectUsers.passStudentsFromGuidance );
-router.patch('/from_cashier/approved',selectUsers.StudentsApprovefromCashierController );
-router.patch('/from_guidance/approved',selectUsers.StudentsApprovefromGuidanceController );
-router.patch('/from_registrar/approved',selectUsers.StudentsApprovefromRegistrarController );
-router.patch('/from_registrar/approved_enrolled',selectUsers.StudentsApprovefromRegistrarEnrolledController );
+router.patch('/select/all_students/from_guidance_pass', selectUsers.passStudentsFromGuidance);
+router.patch('/from_cashier/approved', selectUsers.StudentsApprovefromCashierController);
+router.patch('/from_guidance/approved', selectUsers.StudentsApprovefromGuidanceController);
+router.patch('/from_registrar/approved', selectUsers.StudentsApprovefromRegistrarController);
+router.patch('/from_registrar/approved_enrolled', selectUsers.StudentsApprovefromRegistrarEnrolledController);
 
-router.get('/select/all_teachers',selectUsers.fetchAllTeachers );
+router.get('/select/all_teachers', selectUsers.fetchAllTeachers);
 //Create
-router.post('/departmental/user',allUser.registerDepartmentalUser );
-router.post('/student/user',allUser.registerStudentUser );
+router.post('/departmental/user', allUser.registerDepartmentalUser);
+router.post('/student/user', allUser.registerStudentUser);
 
 // User and Roles page
 //Role
-router.post("/roles/list", RoleController.getRoleList);
+router.get("/roles/list", RoleController.getRoleList);
 router.post("/roles/create", RoleController.createRole);
 router.put("/roles/update/:id", RoleController.updateRole);
+router.put("/roles/update_status/:id", RoleController.updateRoleStatus);
 router.delete("/roles/delete/:id", RoleController.deleteRole);
 
 //users

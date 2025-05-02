@@ -1,4 +1,4 @@
-import db from '../../util/database';
+import db from '../../config/db';
 import { GenUser } from '../../models/genUser';
 
 export class authRepository {
@@ -7,8 +7,9 @@ export class authRepository {
             .join('persons as p', 'u.person_id', 'p.id')
             .join('user_roles as r', 'u.user_role_id', 'r.id')
             .leftJoin('suffix', 'suffix.id', 'p.suffix_id')
-            .whereRaw('LOWER(u.username) = ?', [username.toLowerCase()]) // case-insensitive
+            .whereRaw('LOWER(u.username) = ?', [username.toLowerCase()])
             .where('u.is_deleted', 0)
+            // .where('r.is_active', 1)
             .select(
                 'u.*',
                 'p.first_name',
@@ -21,7 +22,8 @@ export class authRepository {
                 'p.citizenship',
                 'p.email as person_email',
                 'p.contact_no',
-                'r.role_name'
+                'r.role_name',
+                'r.is_active as role_is_active'
             );
     }
 

@@ -18,21 +18,21 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_json_1 = __importDefault(require("../../config/config.json"));
 const auth_1 = require("../../repository/authRepository/auth");
 const JWT_SECRET = config_json_1.default.JWT_SECRET || 'letmein';
-// Create a new user (register)
-const createUser = (person_id_1, guardian_id_1, username_1, password_1, user_role_id_1, ...args_1) => __awaiter(void 0, [person_id_1, guardian_id_1, username_1, password_1, user_role_id_1, ...args_1], void 0, function* (person_id, guardian_id, username, password, user_role_id, status_id = 1, is_emaild, is_deleted, is_deleted_by) {
+const createUser = (person_id_1, guardian_id_1, username_1, gen_user_email_1, password_1, user_role_id_1, change_pass_code_1, ...args_1) => __awaiter(void 0, [person_id_1, guardian_id_1, username_1, gen_user_email_1, password_1, user_role_id_1, change_pass_code_1, ...args_1], void 0, function* (person_id, guardian_id, username, gen_user_email, password, user_role_id, change_pass_code, status_id = 1, is_emailed, is_deleted, is_deleted_by) {
     try {
         const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-        // Save user in the database
         const user = {
             person_id,
             guardian_id,
             username,
             password: hashedPassword,
-            user_role_id, status_id,
-            gen_user_email: '',
-            is_emailed: false,
-            is_deleted: 0,
-            is_deleted_by: 0
+            user_role_id,
+            status_id,
+            gen_user_email,
+            change_pass_code,
+            is_emailed,
+            is_deleted,
+            is_deleted_by
         };
         yield auth_1.authRepository.save(user);
         return { message: 'User Registered!' };
@@ -48,7 +48,7 @@ const findUserByUsername = (username) => __awaiter(void 0, void 0, void 0, funct
         if (!result || result.length === 0) {
             return null;
         }
-        return result;
+        return result[0];
     }
     catch (err) {
         throw new Error('Error finding user: ' + err.message);
@@ -56,6 +56,6 @@ const findUserByUsername = (username) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.findUserByUsername = findUserByUsername;
 const generateToken = (user) => {
-    return jsonwebtoken_1.default.sign({ id: user.id, username: user.username, user_role_id: user.user_role_id }, JWT_SECRET, { expiresIn: '1h' });
+    return jsonwebtoken_1.default.sign({ id: user.id, username: user.username, user_role_id: user.user_role_id }, JWT_SECRET, { expiresIn: '3h' });
 };
 exports.generateToken = generateToken;

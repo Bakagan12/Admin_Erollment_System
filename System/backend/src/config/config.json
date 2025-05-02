@@ -1,7 +1,7 @@
 {
     "host": "localhost",
     "user": "root",
-    "database": "sta_cruz",
+    "database": "admin_sta_cruz",
     "password": "",
     "JWT_SECRET": "mysecretkey123",
     "EMAIL_HOST": "smtp.gmail.com",

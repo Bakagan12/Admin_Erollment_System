@@ -1,7 +1,7 @@
 import { RouterModule } from '@angular/router';
 import { Component } from '@angular/core';
-import {FooterComponent} from '../../../homePage/footer/footer.component';
-import {AuthService} from '../../../../service/auth/auth.service';
+import { FooterComponent } from '../../../homePage/footer/footer.component';
+import { AuthService } from '../../../../service/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,8 +11,8 @@ import {AuthService} from '../../../../service/auth/auth.service';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  constructor (private authService: AuthService){}
-logout(): void{
-  this.authService.logout();
-}
+  constructor(private authService: AuthService) { }
+  logout(): void {
+    this.authService.logout();
+  }
 }

@@ -18,6 +18,7 @@ function generate6DigitCode(): string {
 // Function to send a new password to the user
 export const sendEmail = async (email: string): Promise<void> => {
   try {
+    // console.log(email);
     const user = await EmailRepo.find(email);
 
     if (!user) {
@@ -26,9 +27,9 @@ export const sendEmail = async (email: string): Promise<void> => {
 
     const { username, gen_user_email } = user;
 
- // Generate and update 6-digit passcode
+    // Generate and update 6-digit passcode
     const passcode = generate6DigitCode();
-   const updateUser = await EmailRepo.updateChangePassCode(email, passcode);
+    const updateUser = await EmailRepo.updateChangePassCode(email, passcode);
 
     const subject = 'Your New Account Details';
     const html = `<!DOCTYPE html>
@@ -113,6 +114,6 @@ export const sendEmail = async (email: string): Promise<void> => {
     return updateUser;
   } catch (error) {
     console.error('Error sending email:', error);
-     throw error;
+    throw error;
   }
 };

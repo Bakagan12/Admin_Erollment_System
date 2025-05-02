@@ -85,6 +85,10 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             res.status(401).json({ message: 'Invalid password' });
             return;
         }
+        if (user.role_is_active === 0) {
+            res.status(403).json({ message: 'This Role has been InActive' });
+            return;
+        }
         // Generate JWT token with user data and role
         const token = userService.generateToken(user);
         // Get the role route based on the user's role
@@ -93,8 +97,23 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         res.json({
             message: 'Login successful',
             token,
+            is_deleted: user.is_deleted,
             user_role_id: user.user_role_id,
             redirectUrl,
+            id: user.id,
+            username: user.username,
+            email: user.gen_user_email,
+            role_name: user.role_name,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            middle_name: user.middle_name,
+            age: user.age,
+            date_of_birth: user.date_of_birth,
+            place_of_birth: user.place_of_birth,
+            gender: user.gender,
+            citizenship: user.citizenship,
+            gen_user_email: user.gen_user_email,
+            contact_number: user.contact_no
         });
     }
     catch (err) {
@@ -113,9 +132,9 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         res.status(422).json({ errors: errors.array() });
         return;
     }
-    const { person_id, guardian_id, username, password, user_role_id, status_id, is_emailed, is_deleted, is_deleted_by } = req.body;
+    const { person_id, guardian_id, username, password, change_pass_code, gen_user_email, user_role_id, status_id, is_emailed, is_deleted, is_deleted_by } = req.body;
     try {
-        const result = yield userService.createUser(person_id, guardian_id, username, password, user_role_id, status_id, is_emailed, is_deleted, is_deleted_by);
+        const result = yield userService.createUser(person_id, guardian_id, username, gen_user_email, password, change_pass_code, user_role_id, status_id, is_emailed, is_deleted, is_deleted_by);
         res.status(201).json(result);
     }
     catch (err) {

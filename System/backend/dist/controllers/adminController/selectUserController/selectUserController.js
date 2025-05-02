@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchAllTeachers = exports.fetchAllStudents = void 0;
+exports.StudentsApprovefromRegistrarEnrolledController = exports.StudentsApprovefromRegistrarController = exports.StudentsApprovefromGuidanceController = exports.StudentsApprovefromCashierController = exports.passStudentsFromGuidance = exports.fetchAllStudentsFromGuidance = exports.fetchAllStudentsFromCashier = exports.fetchAllStudentsFromRegistrar = exports.fetchAllTeachers = exports.fetchAllStudents = void 0;
 const selectUsers = __importStar(require("../../../services/adminService/select/selectUserService"));
 const fetchAllStudents = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -76,3 +76,137 @@ const fetchAllTeachers = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.fetchAllTeachers = fetchAllTeachers;
+const fetchAllStudentsFromRegistrar = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const students = yield selectUsers.getAllStudentsFromRegistrar();
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.fetchAllStudentsFromRegistrar = fetchAllStudentsFromRegistrar;
+const fetchAllStudentsFromCashier = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const students = yield selectUsers.getAllStudentsFromCashier();
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.fetchAllStudentsFromCashier = fetchAllStudentsFromCashier;
+const fetchAllStudentsFromGuidance = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const students = yield selectUsers.getAllStudentsFromGuidance();
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.fetchAllStudentsFromGuidance = fetchAllStudentsFromGuidance;
+// passStudentsFromGuidance
+const passStudentsFromGuidance = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const enrollment_id = req.body.enrollment_id;
+        const students = yield selectUsers.passStudentsFromGuidance(enrollment_id);
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.passStudentsFromGuidance = passStudentsFromGuidance;
+const StudentsApprovefromCashierController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const enrollment_id = req.body.enrollment_id;
+        const students = yield selectUsers.StudentsApprovefromCashierService(enrollment_id);
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.StudentsApprovefromCashierController = StudentsApprovefromCashierController;
+const StudentsApprovefromGuidanceController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const enrollment_id = req.body.enrollment_id;
+        const students = yield selectUsers.StudentsApprovefromGuidanceService(enrollment_id);
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.StudentsApprovefromGuidanceController = StudentsApprovefromGuidanceController;
+const StudentsApprovefromRegistrarController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const enrollment_id = req.body.enrollment_id;
+        const students = yield selectUsers.StudentsApprovefromRegistrarService(enrollment_id);
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.StudentsApprovefromRegistrarController = StudentsApprovefromRegistrarController;
+const StudentsApprovefromRegistrarEnrolledController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Call the service to fetch students
+        const enrollment_id = req.body.enrollment_id;
+        const students = yield selectUsers.StudentsApprovefromRegistrarEnrolledService(enrollment_id);
+        res.status(200).json(students);
+    }
+    catch (err) {
+        console.error('Error fetching students:', err);
+        // Send error response
+        res.status(500).json({
+            message: 'Error fetching students',
+            error: (err instanceof Error) ? err.message : err,
+        });
+    }
+});
+exports.StudentsApprovefromRegistrarEnrolledController = StudentsApprovefromRegistrarEnrolledController;

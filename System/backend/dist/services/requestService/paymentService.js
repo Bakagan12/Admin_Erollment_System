@@ -8,23 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-// services/paymentService.ts
-const payment_1 = __importDefault(require("../../repository/requestsRepo/payment"));
+exports.PaymentService = void 0;
+const paymentRepo_1 = require("../../repository/requestsRepo/paymentRepo");
 class PaymentService {
-    createPaymentMethod(data) {
+    constructor(secretKey) {
+        this.paymentRepo = new paymentRepo_1.PaymentRepository(secretKey);
+    }
+    createPaymentIntent(amount, currency) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const result = yield payment_1.default.createPaymentMethod(data);
-                return result;
-            }
-            catch (error) {
-                throw new Error('Error in creating payment method: ' + error.message);
-            }
+            return this.paymentRepo.createPaymentIntent(amount, currency);
+        });
+    }
+    createPaymentMethod(paymentMethodData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.paymentRepo.createPaymentMethod(paymentMethodData);
+        });
+    }
+    attachToPaymentIntent(paymentIntentId, paymentMethodId, returnUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.paymentRepo.attachToPaymentIntent(paymentIntentId, paymentMethodId, returnUrl);
         });
     }
 }
-exports.default = new PaymentService();
+exports.PaymentService = PaymentService;

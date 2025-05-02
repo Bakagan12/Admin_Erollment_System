@@ -6,7 +6,10 @@ import { HeaderComponent } from '../admin-dashboard/header/header.component';
 import { FooterComponent } from '../admin-dashboard/footer/footer.component';
 import { AllUsersService } from '../../../../service/user/all-users.service';
 import { AuthService } from '../../../../service/auth/auth.service';
-import { FormBuilder, FormGroup, Validators,FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PaginationService } from '../../../../utils/pagination-service.service';
+import { AdminService } from '../../../../service/AdminService/admin.service';
+import { LoadingService } from '../../../../utils/loding_template.service';
 
 interface User {
   user_id: string;
@@ -30,16 +33,17 @@ interface User {
 @Component({
   standalone: true,
   selector: 'app-user-roles',
-  imports: [SideBarComponent, HeaderComponent, FooterComponent,FormsModule, ReactiveFormsModule, RouterModule, CommonModule],
+  imports: [SideBarComponent, HeaderComponent, FooterComponent, FormsModule, ReactiveFormsModule, RouterModule, CommonModule],
   templateUrl: './user.component.html'
 })
 export class UserRolesComponent implements OnInit {
   openModal: boolean = false;
   isEditModalOpen: boolean = false;
   isDeleteModalOpen: boolean = false;
-  users: User[] = [];
+  users: any[] = [];
+  roleList: any[] = [];
   selectedUser: User | null = null;
-  selectedUserId: string ='';
+  selectedUserId: string = '';
   userForm: FormGroup;
   formError: string = '';
   first_nameError: string = '';
@@ -54,18 +58,18 @@ export class UserRolesComponent implements OnInit {
   emergency_contact_nameError: string = '';
   emergency_contact_numberError: string = '';
   passwordsError: string = '';
+  role_nameError: string = '';
+  confirmPasswordsError: string = '';
 
-  //Pagination
-  paginatedUsers: User[] = [];
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  totalPages: number = 1;
-
-  //for search
-  filteredUsers: any[] = [];
-  searchTerm: string = '';
-
-  constructor(private userService: AllUsersService, private auth: AuthService, private fb: FormBuilder, private router: Router) {
+  constructor(
+    private userService: AllUsersService,
+    private auth: AuthService,
+    private fb: FormBuilder,
+    private router: Router,
+    public pagination: PaginationService,
+    private adminService: AdminService,
+    public loadingService: LoadingService
+  ) {
     // Initialize form
     this.userForm = this.fb.group({
       first_name: ['', Validators.required],
@@ -80,6 +84,7 @@ export class UserRolesComponent implements OnInit {
       emergency_contact_name: ['', Validators.required],
       emergency_contact_number: ['', Validators.required],
       username: ['', Validators.required],
+      role_name: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm_password: ['', Validators.required],
       user_role_id: 12,
@@ -92,51 +97,38 @@ export class UserRolesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
+    this.loadRoleList();
   }
-
-  loadUsers(): void {
-    this.userService.getAllUsers().subscribe(
-      (users: User[]) => {
-        this.users = users;
-        this.setupPagination();
-        this.filterUsers();
+  loadRoleList(): void {
+    this.adminService.getRoleList().subscribe({
+      next: data => {
+        const result = [];
+        for (let item of data) {
+          result.push(item);
+          if (item.role_name !== "Admin" && item.role_name !== "Owner") break;
+        }
+        this.roleList = result;
+        // console.log('asczcpajspd', this.roleList);
       },
-      (error) => {
-        console.error('Error fetching users:', error);
+      error: err => {
+
       }
-    );
+    });
   }
-  setupPagination(): void {
-    this.totalPages = Math.ceil(this.users.length / this.itemsPerPage);
-    this.updatePaginatedUsers();
+  loadUsers(): void {
+    this.adminService.getOverAllUsers().subscribe({
+      next: data => {
+        this.users = data.data;
+        // console.log("All Users: ", this.users);
+      },
+      error: err => {
+        console.error('Error fetching users:', err);
+      }
+    });
   }
-  updatePaginatedUsers(): void {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    this.paginatedUsers = this.users.slice(start, end);
-  }
-
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.updatePaginatedUsers();
-    }
-  }
-
-  filterUsers(): void {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredUsers = this.users.filter(user =>
-      user.first_name.toLowerCase().includes(term) ||
-      user.last_name.toLowerCase().includes(term) ||
-      user.username.toLowerCase().includes(term) ||
-      (user.middle_name && user.middle_name.toLowerCase().includes(term)) ||
-      user.gen_user_email.toLowerCase().includes(term)
-    );
-    this.setupPagination();
-  }
-
   // Open Edit Modal and populate form
   openEditModal(user: User): void {
+    this.loadingService.show();
     this.selectedUser = user;
     this.selectedUserId = user.user_id;
     this.userForm.setValue({
@@ -146,6 +138,7 @@ export class UserRolesComponent implements OnInit {
       suffix: user.suffix || '',
       gen_user_email: user.gen_user_email || '',
       username: user.username || '',
+      role_name: user.role_name || '',
       password: user.password || '',
       confirm_password: user.password || '',
       dob: user.dob || '',
@@ -179,37 +172,38 @@ export class UserRolesComponent implements OnInit {
   }
 
   // Update User (for Edit Modal)
-  updateUser (): void {
-    const updatedUser  = { ...this.userForm.value };
-     // Email validation
+  updateUser(): void {
+    const updatedUser = { ...this.userForm.value };
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(updatedUser.gen_user_email)) {
       alert('Invalid email format!');
       return;
     }
     // If password is empty, do not send it to the backend
-    if (!updatedUser .password) {
-        delete updatedUser .password; // Remove password if not provided
+    if (!updatedUser.password) {
+      delete updatedUser.password; // Remove password if not provided
     }
 
     // Call the service to update the user
-    this.userService.updateUser (this.selectedUserId, updatedUser ).subscribe({
-        next: () => {
-            alert('User  updated successfully!');
-            this.getAllUsers(); // Refresh the user list
-            this.isEditModalOpen = false;
-        },
-        error: (err) => {
-            console.error('Update failed:', err);
-            alert(`Failed to update user. Error: ${err.error?.message || 'Unknown error'}`);
-        }
+    this.userService.updateUser(this.selectedUserId, updatedUser).subscribe({
+      next: () => {
+        alert('User  updated successfully!');
+        this.getAllUsers(); // Refresh the user list
+        this.isEditModalOpen = false;
+      },
+      error: (err) => {
+        console.error('Update failed:', err);
+        alert(`Failed to update user. Error: ${err.error?.message || 'Unknown error'}`);
+      }
     });
-}
+  }
 
 
   // Open Delete Modal
-  openDeleteModal(user: User): void {
-    this.selectedUserId = user.user_id;
+  openDeleteModal(user: any): void {
+    // console.log(user.id);
+    this.selectedUserId = user.id;
     this.isDeleteModalOpen = true;
   }
 
@@ -229,95 +223,130 @@ export class UserRolesComponent implements OnInit {
 
   // Delete User
   deleteUser(userId: string): void {
-    if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.deleteUser(userId).subscribe({
-        next: () => {
-          this.getAllUsers();
-          this.closeDeleteModal();
-        },
+    console.log(userId);
+    this.adminService.deleteUser(Number(userId)).subscribe({
+      next: data => {
+        // console.log(data);
+        this.loadUsers();
+        this.closeDeleteModal();
+      },
 
-        error: (err) => console.error('Delete failed:', err)
-      });
-    }
+      error: (err) => console.error('Delete failed:', err)
+    });
   }
   onSubmit() {
-
+    this.loadingService.show();
     const userData = this.userForm.value;
-    if (!userData.first_name){
+
+    // Reset previous errors before starting the checks
+    this.first_nameError = '';
+    this.middle_nameError = '';
+    this.last_nameError = '';
+    this.suffixError = '';
+    this.dobError = '';
+    this.genderError = '';
+    this.addressError = '';
+    this.gen_user_emailError = '';
+    this.contact_numberError = '';
+    this.emergency_contact_nameError = '';
+    this.emergency_contact_numberError = '';
+    this.passwordsError = '';
+    this.confirmPasswordsError = '';
+    this.formError = '';
+
+    // Check individual field errors
+    let hasErrors = false;
+
+    if (!userData.first_name) {
       this.first_nameError = 'First Name is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.middle_name){
+    if (!userData.middle_name) {
       this.middle_nameError = 'Middle Name is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.last_name){
+    if (!userData.last_name) {
       this.last_nameError = 'Last Name is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.suffix) {
+    if (!userData.suffix) {
       this.suffixError = 'Suffix is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.dob){
+    if (!userData.dob) {
       this.dobError = 'Date of Birth is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.gender){
+    if (!userData.gender) {
       this.genderError = 'Gender is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.address){
+    if (!userData.address) {
       this.addressError = 'Address is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.gen_user_email){
+    if (!userData.gen_user_email) {
       this.gen_user_emailError = 'Email is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.contact_number){
+    if (!userData.contact_number) {
       this.contact_numberError = 'Contact Number is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.emergency_contact_name){
+    if (!userData.emergency_contact_name) {
       this.emergency_contact_nameError = 'Emergency Contact Name is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.emergency_contact_number) {
+    if (!userData.emergency_contact_number) {
       this.emergency_contact_numberError = 'Emergency Contact Number is required';
-      return;
+      hasErrors = true;
     }
-    else if (!userData.password) {
+    if (!userData.password) {
       this.passwordsError = 'Password is required';
-      return;
+      hasErrors = true;
     }
-    if (userData.password !== userData.confirm_password) {
+    if (!userData.confirm_password) {
+      this.confirmPasswordsError = 'Confirm Password is required';
+      hasErrors = true;
+    }
+
+    // Password match check
+    if (userData.password && userData.confirm_password && userData.password !== userData.confirm_password) {
       this.formError = 'Passwords do not match!';
       return;
     }
+
+    // Email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(userData.gen_user_email)) {
+    if (userData.gen_user_email && !emailRegex.test(userData.gen_user_email)) {
       this.formError = 'Invalid email format!';
-      // alert('');
       return;
     }
 
-    this.userService.createUser(userData).subscribe({
+    // If there are errors, return early and don't submit
+    if (hasErrors) {
+      this.formError = 'All fields are required!';
+      return;
+    }
+
+    // Proceed to submit the form if no errors
+    console.log('Submitting form with:', userData);
+    this.adminService.createUser(userData).subscribe({
       next: (res) => {
-        // alert('User registered successfully!');
         this.userForm.reset();
+        this.loadingService.hide();
         this.openModal = false;
-        // this.router.navigate(['/admin/dashboard/user/role']); // optional redirect
+        this.getAllUsers();
       },
       error: (err) => {
         console.error('Error creating user:', err);
         if (err.error?.message) {
-          this.formError = err.error.message; // Display specific error message
-        // General error message
+          this.formError = err.error.message;
         }
       }
     });
   }
+
   allowNumbersOnly(event: KeyboardEvent): boolean {
     const charCode = event.key.charCodeAt(0);
     // Allow only digits 0-9
@@ -328,4 +357,80 @@ export class UserRolesComponent implements OnInit {
       return false;
     }
   }
+  // ===========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Pagination Section <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<===========================
+  //for Search and pagination
+  sortColumn: string = 'id';
+  sortAscending: boolean = true;
+
+
+  get searchQuery(): string {
+    return this.pagination.searchQuery;
+  }
+  set searchQuery(value: string) {
+    this.pagination.setSearchQuery(value);
+  }
+
+  get currentPage(): number {
+    return this.pagination.currentPage;
+  }
+
+  get itemsPerPage(): number {
+    return this.pagination.itemsPerPage;
+  }
+
+  //Pagination Users
+  get totalPages(): number {
+    return Math.ceil(this.filteredStudents.length / this.itemsPerPage);
+  }
+  get sortByIdAsc(): boolean {
+    return this.pagination.sortByIdAsc;
+  }
+  get filteredStudents() {
+    let result = this.users;
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase();
+      result = result.filter(user => {
+        const fullName = `${user.username} ${user.first_name} ${user.middle_name} ${user.last_name} ${user.email || ''} ${user.role_name}`.toLowerCase();
+        return fullName.includes(query);
+      });
+    }
+    return result.sort((a, b) => {
+      if (this.sortByIdAsc) {
+        return a.id - b.id;
+      } else {
+        return b.id - a.id;
+      }
+    });
+  }
+
+  get paginatedUsers() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredStudents.slice(start, start + this.itemsPerPage);
+  }
+
+  // pages
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.pagination.setCurrentPage(page);
+    }
+  }
+  toggleSortByStudentName() {
+    this.updateSort('student_name');
+  }
+
+  toggleSortByGradeLevel() {
+    this.updateSort('grade_level');
+  }
+  toggleSortByStatus() {
+    this.updateSort('status');
+  }
+  updateSort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortAscending = !this.sortAscending;
+    } else {
+      this.sortColumn = column;
+      this.sortAscending = true;
+    }
+  }
+
 }

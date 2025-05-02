@@ -24,14 +24,21 @@ const transporter = nodemailer_1.default.createTransport({
         pass: config_json_1.default.EMAIL_PASS,
     },
 });
+function generate6DigitCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // Always 6 digits
+}
 // Function to send a new password to the user
 const sendEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // console.log(email);
         const user = yield emailRepo_1.EmailRepo.find(email);
         if (!user) {
-            throw new Error('Email not found in the database');
+            throw new Error('This Email has no Account!');
         }
         const { username, gen_user_email } = user;
+        // Generate and update 6-digit passcode
+        const passcode = generate6DigitCode();
+        const updateUser = yield emailRepo_1.EmailRepo.updateChangePassCode(email, passcode);
         const subject = 'Your New Account Details';
         const html = `<!DOCTYPE html>
                   <html lang="en">
@@ -61,7 +68,7 @@ const sendEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
                               text-align: center;
                           }
                   
-                          p {
+                          p, .code {
                               font-size: 16px;
                               line-height: 1.6;
                               color: #333;
@@ -76,21 +83,24 @@ const sendEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
                               margin-bottom: 20px;
                               color: #444;
                           }
-                  
+
                           .footer {
                               margin-top: 20px;
                               font-size: 14px;
                               color: #777;
                           }
+
                       </style>
                   </head>
                   <body>
                       <div class="container">
                           <p class="header">Hello <strong>${gen_user_email}</strong>,</p>
-                          <p>Your account has verified. Your Username is: <strong>${username}</strong> and continue the process to change your password immediately.</p>
-                          <p>Please make sure to change your password as soon as possible.</p>
+                          <p>Your account has been verified. Your Username is: <strong>${username}</strong> and to continue the process, to change your password immediately.</p>
+                         <p>Your verification code is:</p>
+                          <div class="code"><strong>${passcode}</strong></div>
+                          <p>Please use this code to continue the password reset process.</p>
                           <div class="footer">
-                              <p>If you did not request this change, please contact support immediately.</p>
+                              <p>If you didn’t request this change, please ignore this email or please contact support immediately.</p>
                           </div>
                       </div>
                   </body>
@@ -107,9 +117,11 @@ const sendEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
         // Send the email
         const info = yield transporter.sendMail(mailOptions);
         console.log('Email sent: ' + info.response);
+        return updateUser;
     }
     catch (error) {
         console.error('Error sending email:', error);
+        throw error;
     }
 });
 exports.sendEmail = sendEmail;

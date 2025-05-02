@@ -5,8 +5,7 @@ import { RoleService } from "../../../../services/adminService/user_and_role/rol
 export class RoleController {
   static async getRoleList(req: Request, res: Response) {
     try {
-      const role = req.body as UserRoles;
-      const roles = await RoleService.getRoleList(role);
+      const roles = await RoleService.getRoleList();
       res.json(roles);
     } catch (err) {
       res.status(500).json({ message: "Error fetching roles", error: err });
@@ -26,8 +25,18 @@ export class RoleController {
   static async updateRole(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);
-      const role = req.body as Partial<UserRoles>;
+      const role = req.body;
       await RoleService.updateRole(id, role);
+      res.json({ message: "Role updated successfully" });
+    } catch (err) {
+      res.status(500).json({ message: "Error updating role", error: err });
+    }
+  }
+  static async updateRoleStatus(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id);
+      const status = req.body;
+      await RoleService.updateRoleStatus(id, status);
       res.json({ message: "Role updated successfully" });
     } catch (err) {
       res.status(500).json({ message: "Error updating role", error: err });

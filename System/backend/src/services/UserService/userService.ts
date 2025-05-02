@@ -46,9 +46,11 @@ export const createUser = async (
     }
 };
 
+
+type UserWithRoleStatus = GenUser & Persons & UserRoles & { role_is_active: number };
 export const findUserByUsername = async (
     username: string
-): Promise<GenUser & Persons & UserRoles | null> => {
+): Promise<UserWithRoleStatus | null> => {
     try {
         const result = await authRepository.find(username);
 
@@ -56,7 +58,7 @@ export const findUserByUsername = async (
             return null;
         }
 
-        return result[0] as GenUser & Persons & UserRoles;
+        return result[0] as UserWithRoleStatus;
     } catch (err) {
         throw new Error('Error finding user: ' + (err as Error).message);
     }

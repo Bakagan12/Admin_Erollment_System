@@ -3227,7 +3227,7 @@ type-is@~1.6.18:
     media-typer "0.3.0"
     mime-types "~2.1.24"
 
-typeorm@^0.3.21:
+typeorm@^0.3.22:
   version "0.3.22"
   resolved "https://registry.npmjs.org/typeorm/-/typeorm-0.3.22.tgz"
   integrity sha512-P/Tsz3UpJ9+K0oryC0twK5PO27zejLYYwMsE8SISfZc1lVHX+ajigiOyWsKbuXpEFMjD9z7UjLzY3+ElVOMMDA==

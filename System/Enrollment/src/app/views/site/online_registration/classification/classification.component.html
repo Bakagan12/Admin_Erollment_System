@@ -1,22 +1,29 @@
-
 <style>
-  body{
+  body {
     background-color: rgb(161, 196, 243);
     background-repeat: none;
   }
 </style>
+
 <body class="h-screen flex items-center justify-center">
   <app-header></app-header>
   <div class="text-center space-y-6 col-12 bg-blue-100 p-5 w-100 ml-10 mr-10 mt-10 rounded-lg">
+    <button (click)="openModal = false"
+      class="absolute top-0 right-0 mt-2 mr-2 bg-blue-300 hover:opacity-80 rounded-tr-lg rounded-bl-lg text-blue-900 p-2 text-3xl shadow">
+      &times;
+    </button>
     <h1 class="text-2xl">Register</h1>
-
+    <div *ngIf="formError" class="text-red-900 text-xl rounded-lg bg-red-300 text-center mt-2">
+      {{ formError }}
+    </div>
     <!-- Form Starts Here -->
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 gap-6">
       <!-- Row 1 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="flex flex-col">
           <label class="text-lg">First Name</label>
-          <input formControlName="first_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter First Name" />
+          <input formControlName="first_name" type="text" class="border rounded p-2 mt-2"
+            placeholder="Enter First Name" />
           <div *ngIf="first_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ first_nameError }}
           </div>
@@ -32,7 +39,8 @@
 
         <div class="flex flex-col">
           <label class="text-lg">Last Name</label>
-          <input formControlName="last_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Last Name" />
+          <input formControlName="last_name" type="text" class="border rounded p-2 mt-2"
+            placeholder="Enter Last Name" />
           <div *ngIf="last_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ last_nameError }}
           </div>
@@ -80,7 +88,8 @@
 
         <div class="flex flex-col">
           <label class="text-lg">Email</label>
-          <input formControlName="gen_user_email" type="gen_user_email" class="border rounded p-2 mt-2" placeholder="Enter gen_user_email" />
+          <input formControlName="gen_user_email" type="gen_user_email" class="border rounded p-2 mt-2"
+            placeholder="Enter gen_user_email" />
           <div *ngIf="gen_user_emailError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ gen_user_emailError }}
           </div>
@@ -91,7 +100,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="flex flex-col">
           <label class="text-lg">Contact Number</label>
-          <input formControlName="contact_number" type="tel" (keypress)="allowNumbersOnly($event)" maxlength="20"  class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
+          <input formControlName="contact_number" type="tel" (keypress)="allowNumbersOnly($event)" maxlength="20"
+            class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
           <div *ngIf="contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ contact_numberError }}
           </div>
@@ -99,7 +109,8 @@
 
         <div class="flex flex-col">
           <label class="text-lg">Emergency Contact Name</label>
-          <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Name" />
+          <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2"
+            placeholder="Enter Emergency Contact Name" />
           <div *ngIf="emergency_contact_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ emergency_contact_nameError }}
           </div>
@@ -107,7 +118,8 @@
 
         <div class="flex flex-col">
           <label class="text-lg">Emergency Contact Number</label>
-          <input formControlName="emergency_contact_number" (keypress)="allowNumbersOnly($event)" maxlength="20"  type="tel" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
+          <input formControlName="emergency_contact_number" (keypress)="allowNumbersOnly($event)" maxlength="20"
+            type="tel" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
           <div *ngIf="emergency_contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ emergency_contact_numberError }}
           </div>
@@ -118,7 +130,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex flex-col">
           <label class="text-lg">Password</label>
-          <input formControlName="password" type="password" class="border rounded p-2 mt-2" placeholder="Enter Password" />
+          <input formControlName="password" type="password" class="border rounded p-2 mt-2"
+            placeholder="Enter Password" />
           <div *ngIf="passwordsError" class="text-red-900 text-sm rounded-sm text-center mt-2">
             {{ passwordsError }}
           </div>
@@ -126,7 +139,11 @@
 
         <div class="flex flex-col">
           <label class="text-lg">Confirm Password</label>
-          <input formControlName="confirm_password" type="password" class="border rounded p-2 mt-2" placeholder="Confirm Password" />
+          <input formControlName="confirm_password" type="password" class="border rounded p-2 mt-2"
+            placeholder="Confirm Password" />
+          <div *ngIf="passwordsError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+            {{ confirmPasswordsError }}
+          </div>
         </div>
       </div>
 

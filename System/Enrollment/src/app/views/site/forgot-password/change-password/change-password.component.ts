@@ -1,52 +1,77 @@
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { HeaderComponent } from '../../login/header/header.component';
+import { FooterComponent } from '../../adminPage/admin-dashboard/footer/footer.component';
+import { Router } from '@angular/router';
+import { FormDataService } from '../../../../service/onlineforms/forms.service';
+import { EmailService } from '../../../../service/mailer/email.service';
+import { SharedDeclarationsModule } from '../../../../shared_declations/shared.declarations.module';
+import { LoadingService } from '../../../../utils/loding_template.service';
+import { UpdatePasswordService } from '../../../../service/update_password/update-password.service';
 
 @Component({
   standalone: true,
   selector: 'app-change-password',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
-  templateUrl: './change-password.component.html',
+  imports: [HeaderComponent, SharedDeclarationsModule],
+  templateUrl: './change-password.component.html'
 })
-export class ChangePasswordComponent {
+export class ChangePasswordComponent implements OnInit {
+  email: string | null = null;
+  username: string | null = null;
+  change_pass_code: string | null = null;
+  user_id: string | null = null;
 
-  changePasswordForm: FormGroup;
-  passwordVisible: boolean = false; // To toggle password visibility
-  errorMessage: string = ''; // To display any error message if needed
+  newPassword: string = '';
+  confirm_newPassword: string = '';
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    // Initialize the form group
-    this.changePasswordForm = this.fb.group({
-      // username: [{ value: '', disabled: true }, Validators.required],  // Username field is readonly
-      newPassword: ['', [Validators.required, Validators.minLength(5)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(5)]]
-    });
-  }
-
+  constructor(
+    private router: Router,
+    private loadingService: LoadingService,
+    private updatePasswordService: UpdatePasswordService,
+    private formDataService: FormDataService,
+    private emailService: EmailService
+  ) { }
   ngOnInit(): void {
-    // Optionally populate the username field if needed
-    // this.changePasswordForm.patchValue({ username: 'some_username' });
-  }
+    this.email = this.formDataService.getStepData('forgotPasswordEmail');
 
-  // Toggles password visibility
-  togglePasswordVisibility() {
-    this.passwordVisible = !this.passwordVisible;
-  }
+    this.email = localStorage.getItem('gen_user_email');
+    const userData = this.emailService.getStoredUserData();
 
-  // Reset password functionality (this will be linked to the form submission)
-  resetPassword() {
-    if (this.changePasswordForm.valid) {
-      const formValues = this.changePasswordForm.value;
-      console.log('Form Submitted:', formValues);
-      // Call your service here to handle the password change
-    } else {
-      this.errorMessage = 'Please ensure all fields are filled correctly.';
+    this.username = userData.username;
+    this.change_pass_code = userData.change_pass_code;
+    this.user_id = userData.user_id;
+
+    // console.log('Username:', this.username);
+    // console.log('Change Pass Code:', this.change_pass_code);
+    // console.log('User ID:', this.user_id);
+  }
+  onChangePassword(): void {
+    if (!this.newPassword.trim() || !this.confirm_newPassword.trim()) {
+      this.errorMessage = 'Both password fields are required.';
+      return;
     }
-  }
+    if (this.newPassword !== this.confirm_newPassword) {
+      this.errorMessage = 'Passwords do not match.';
+      return;
+    }
 
-  // Getter for easier form validation checking
-  get f() {
-    return this.changePasswordForm.controls;
+    if (!this.user_id) {
+      this.errorMessage = 'Missing user ID.';
+      return;
+    }
+
+    this.loadingService.show(); // show loading spinner
+
+    this.updatePasswordService.updatePassword(this.user_id, this.newPassword).subscribe({
+      next: () => {
+        this.loadingService.hide();
+        this.router.navigate(['/auth/login']);
+      },
+      error: (error: any) => {
+        this.loadingService.hide();
+        this.errorMessage = 'Failed to update password. Please try again.';
+        // console.error(error);
+      }
+    });
   }
 }

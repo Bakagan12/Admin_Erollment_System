@@ -21,6 +21,7 @@ export class Enrollment{
             course_id: number,
             semester_level_id: number,
             grade_level_id:number,
+            subject_id: number,
             section_id:number,
             term_id:number,
             status_id:number,
@@ -38,6 +39,7 @@ export class Enrollment{
             this.semester_level_id = semester_level_id;
             this.grade_level_id = grade_level_id;
             this.section_id = section_id;
+            this.subject_id = subject_id;
             this.term_id = term_id;
             this.status_id = status_id;
             this.is_confirmed_cashier = is_confirmed_cashier; 

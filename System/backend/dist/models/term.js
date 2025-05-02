@@ -1,6 +1,19 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Term = void 0;
+const db_1 = __importDefault(require("../config/db"));
 class Term {
     constructor(id, term_name, date_start, date_end, is_current, is_active, is_deleted, is_deleted_by, is_deleted_at, created_by, updated_by) {
         this.id = id;
@@ -14,6 +27,16 @@ class Term {
         this.is_deleted_by = is_deleted_by;
         this.created_by = created_by;
         this.updated_by = updated_by;
+    }
+    static getAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const results = yield (0, db_1.default)('term')
+                // .where({is_current: 1})
+                .where({ is_active: 1 })
+                .where({ is_deleted: 0 })
+                .select('*');
+            return results.map(row => new Term(row.id, row.term_name, new Date(row.date_start), new Date(row.date_end), row.is_current, row.is_active, row.is_deleted, row.is_deleted_by, row.is_deleted_at, row.created_by, row.updated_by));
+        });
     }
 }
 exports.Term = Term;

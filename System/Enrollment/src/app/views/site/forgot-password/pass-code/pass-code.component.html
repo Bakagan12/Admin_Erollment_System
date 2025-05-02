@@ -1,0 +1,91 @@
+<style>
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s !important;
+    -webkit-text-fill-color: #162938 !important;
+    box-shadow: 0 0 0px 1000px transparent inset !important;
+  }
+</style>
+
+<body class="font-[Poppins]">
+  <div class="fixed inset-0 z-0">
+    <img src="assets/src/img/site/loginBackground.jpg" class="object-cover w-full h-full" alt="" />
+  </div>
+
+  <app-header></app-header>
+
+  <div
+    class="fixed z-10 w-full max-w-md p-4 transform -translate-x-1/2 -translate-y-1/2 shadow-2xl top-1/2 left-1/2 bg-white/15 backdrop-blur-lg rounded-2xl">
+    <div class="w-full px-10 py-6">
+      <p *ngIf="username" class="mb-6 text-center">
+        Hello, <strong>{{ email }}</strong>! Please enter the code to verify your account.
+        <!-- <strong>{{change_pass_code}}</strong> -->
+      </p>
+
+      <form class="flex flex-col items-center gap-6">
+
+        <!-- Username Display -->
+        <div class="relative w-full max-w-xs border-b-2 border-[#162938]">
+          <input type="text" name="username"
+            class="w-full h-12 bg-transparent outline-none text-center text-[#162938] font-semibold pl-5 pr-10"
+            [value]="username" [disabled]="true" required />
+          <span class="absolute top-[-0.5rem] left-1 text-lg text-center text-[#162938] px-1">Username</span>
+          <span class="absolute top-1/2 right-2 transform -translate-y-1/2 text-xl text-[#162938]">👤</span>
+        </div>
+
+        <!-- Code Input -->
+        <div class="relative w-full max-w-xs border-b-2 border-[#162938]">
+          <input type="text" name="pass_code" required (keypress)="number_only.allowOnlyNumbers($event)"
+            [(ngModel)]="enteredCode" maxlength="6"
+            class="w-full h-12 bg-transparent text-center outline-none font-semibold pl-2 pr-10 peer" />
+
+          <label
+            class="absolute top-1/2 left-1 text-center transform -translate-y-1/2 text-lg text-[#162938] transition-all peer-focus:top-[-0.5rem] peer-focus:text-md peer-valid:top-[-0.5rem] peer-valid:text-md">
+            Enter the code
+          </label>
+          <span class="absolute top-1/2 right-2 transform -translate-y-1/2 text-xl text-[#162938]">🔑</span>
+        </div>
+
+        <!-- Buttons -->
+        <a (click)="submitCode()" class="w-full">
+          <button type="submit"
+            class="w-full h-11 bg-[#162938] text-white font-medium rounded-md hover:bg-[#1e3a5f] transition">
+            Submit Code
+          </button>
+        </a>
+        <a [routerLink]="['/forgot/password']" class="w-full">
+          <button type="button"
+            class="w-full h-11 bg-[#162938] text-white font-medium rounded-md hover:bg-[#1e3a5f] transition">
+            Back to Send Email
+          </button>
+        </a>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div *ngIf="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
+      <h2 class="mb-2 text-xl font-semibold text-green-700">Code Verified</h2>
+      <p class="mb-4">Redirecting you to change your password...</p>
+      <button (click)="closeSuccessModal()"
+        class="w-full py-2 text-white transition bg-green-600 rounded hover:bg-green-700">
+        OK
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div *ngIf="showErrorModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
+      <h2 class="mb-2 text-xl font-semibold text-red-600">Invalid Code</h2>
+      <p class="mb-4">The code you entered is incorrect. Please try again.</p>
+      <button (click)="closeErrorModal()" class="w-full py-2 text-white transition bg-red-600 rounded hover:bg-red-700">
+        Try Again
+      </button>
+    </div>
+  </div>
+
+</body>

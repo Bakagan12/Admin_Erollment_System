@@ -16,15 +16,18 @@ exports.allUserRepo = void 0;
 const db_1 = __importDefault(require("../../config/db"));
 const uuid_1 = require("uuid");
 class allUserRepo {
-    // static async gegisterUsers():Promise<any>{
-    //     return db()
-    // }
     static findAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, db_1.default)('gen_users')
-                .join('persons', 'gen_users.person_id', 'persons.id')
-                .join('suffix', 'persons.suffix_id', 'suffix.id')
-                .select('gen_users.username', 'gen_users.gen_user_email', 'gen_users.password', 'persons.first_name', 'persons.middle_name', 'persons.last_name', 'suffix.suffix_name');
+                .leftJoin('persons', 'gen_users.person_id', 'persons.id')
+                .leftJoin('suffix', 'persons.suffix_id', 'suffix.id')
+                .leftJoin('gen_user_roles', 'gen_user_roles.gen_user_id', 'gen_users.id')
+                .leftJoin('user_roles', 'gen_user_roles.user_role_id', 'user_roles.id')
+                .leftJoin('status', 'gen_users.status_id', 'status.id')
+                .where('user_roles.is_active', 1)
+                .where('gen_users.is_deleted', 0)
+                .where('gen_users.status_id', 1)
+                .select('gen_users.id', 'gen_users.username', 'gen_users.gen_user_email', 'gen_users.password', 'persons.first_name', 'persons.email', 'persons.middle_name', 'persons.last_name', 'suffix.suffix_name', 'user_roles.role_name', 'status.status_name');
         });
     }
     static RegisterNewDepartmentalUser(user, person) {
@@ -57,7 +60,7 @@ class allUserRepo {
                     citizenship: person.citizenship,
                     address: person.address,
                     email: person.email,
-                    contact_no: person.contact_number,
+                    contact_no: person.contact_no,
                 });
                 const personId = userdetails[0];
                 const userResult = yield (0, db_1.default)('gen_users').insert({
@@ -122,7 +125,7 @@ class allUserRepo {
                     citizenship: person.citizenship,
                     address: person.address,
                     email: person.email,
-                    contact_no: person.contact_number,
+                    contact_no: person.contact_no,
                 });
                 const personId = personResult[0];
                 //Insert Mother record
@@ -184,9 +187,7 @@ class allUserRepo {
                 });
                 // Insert emergency contact record
                 const contactResult = yield (0, db_1.default)('student_emergency_contact').insert({
-                    first_name: contact.first_name,
-                    middle_name: contact.middle_name,
-                    last_name: contact.last_name,
+                    name: contact.name,
                     suffix_id: contact.suffix_id,
                     address: contact.address,
                     contact_no: contact.contact_no,

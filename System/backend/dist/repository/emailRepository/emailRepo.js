@@ -13,13 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailRepo = void 0;
-const database_1 = __importDefault(require("../../util/database"));
+const db_1 = __importDefault(require("../../config/db"));
 class EmailRepo {
     // Find user by username
     static find(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield (0, database_1.default)('gen_users').where({ gen_user_email: email }).select('username', 'gen_user_email', 'password').first();
+                const user = yield (0, db_1.default)('gen_users').where({ gen_user_email: email }).select('username', 'gen_user_email', 'password', 'change_pass_code').first();
                 return user;
             }
             catch (error) {
@@ -30,13 +30,33 @@ class EmailRepo {
     static updatePassword(email, newPassword) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const updatedUser = yield (0, database_1.default)('gen_users')
+                const updatedUser = yield (0, db_1.default)('gen_users')
                     .where({ gen_user_email: email })
                     .update({ password: newPassword });
                 return updatedUser;
             }
             catch (error) {
                 throw new Error('Error updating the password');
+            }
+        });
+    }
+    static updateChangePassCode(email, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updated = yield (0, db_1.default)('gen_users')
+                    .where({ gen_user_email: email })
+                    .update({ change_pass_code: code });
+                if (updated === 0) {
+                    throw new Error('No user found with this email to update change_pass_code');
+                }
+                // Fetch the updated user manually
+                const updatedUser = yield (0, db_1.default)('gen_users')
+                    .where({ gen_user_email: email })
+                    .first();
+                return updatedUser;
+            }
+            catch (error) {
+                throw new Error('Error updating change_pass_code');
             }
         });
     }

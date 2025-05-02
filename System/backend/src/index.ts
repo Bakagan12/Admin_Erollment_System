@@ -20,6 +20,7 @@ import RetrieveTableData from './routes/RetrieveModelsRoutes';
 import updatePassword from './routes/updatepassword/updatepasswordroutes';
 import RegistrarReport from './routes/departmental_usersRoute/registrar/registrarReportRoute';
 import enrolledStudents from './routes/studentEnrolled_routes';
+import allUser from './routes/adminRoute/all_user/user';
 
 import studentEnrolled from './routes/studentEnrolled_routes';
 
@@ -29,7 +30,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use(express.urlencoded({ extended: false}))
+app.use(express.urlencoded({ extended: false }))
 
 // CORS middleware
 // // app.use(cors());
@@ -48,6 +49,7 @@ app.use(cors({
 
 //no need to login
 //online register
+app.use('/get_all', allUser);
 app.use('/online_registration', allroutes.online_register_route);
 //for email configuration
 app.use('/email', allroutes.emailRoute);
@@ -59,7 +61,7 @@ app.use('/auth', allroutes.authRoutes);
 app.use('/get_all', RetrieveTableData);
 app.use('/res-api', api);
 //STUDENT ENROLLED
-app.use ('/enrolled', studentEnrolled);
+app.use('/enrolled', studentEnrolled);
 api.use('/enrolled_students/online', enrolledStudents);
 
 // Define the routes
@@ -81,7 +83,7 @@ app.use('/registrar', allroutes.online_student_pendingRoute);
 app.use('/reports', RegistrarReport);
 
 //ARI RA E SUMPAY ANG TANAN ! ! !
-app.use('/clinic', clinic);   
+app.use('/clinic', clinic);
 // router.get("/registrar/enrolled-students", RegistrarReportController.getEnrolledStudents);
 
 // // Exports

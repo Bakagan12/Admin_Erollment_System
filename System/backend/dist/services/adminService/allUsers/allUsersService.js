@@ -9,8 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerNewStudent = exports.registerNewDepartmentalUser = void 0;
+exports.registerNewStudent = exports.registerNewDepartmentalUser = exports.fetchAllUsers = void 0;
 const allUsersRegistration_1 = require("../../../repository/adminRepository/allUsersRegistration");
+const fetchAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield allUsersRegistration_1.allUserRepo.findAllUsers();
+        if (users.length === 0) {
+            throw new Error('No users found');
+        }
+        return users;
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            throw new Error(`Error fetching users: ${err.message}`);
+        }
+        throw new Error('Unknown error occurred while fetching users');
+    }
+});
+exports.fetchAllUsers = fetchAllUsers;
 const registerNewDepartmentalUser = (person, user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield allUsersRegistration_1.allUserRepo.RegisterNewDepartmentalUser(user, person);

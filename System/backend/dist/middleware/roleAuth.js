@@ -17,12 +17,12 @@ const roleAuth = (allowedRoles) => {
         }
         try {
             const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
-            if (!decoded || !allowedRoles.includes(decoded.role)) {
+            if (!decoded || !allowedRoles.includes(decoded.role_id)) {
                 res.status(403).json({ message: 'Access denied' });
                 return;
             }
             // Added role-based check here
-            if (allowedRoles.includes(decoded.role)) {
+            if (allowedRoles.includes(decoded.role_id)) {
                 console.log('User has required role');
             }
             next();

@@ -2,9 +2,11 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FooterComponent } from '../site_default/footer/footer.component';
-import { HeaderComponent } from '../online_registration/header/header.component';
+import { FooterComponent } from '../adminPage/admin-dashboard/footer/footer.component';
+import { HeaderComponent } from '../login/header/header.component';
 import { EmailService } from '../../../service/mailer/email.service';
+import { FormDataService } from '../../../service/onlineforms/forms.service';
+import { LoadingService } from '../../../utils/loding_template.service';
 
 @Component({
   standalone: true,
@@ -17,10 +19,14 @@ export class ForgotPasswordComponent {
   emailForm: FormGroup;
   errorMessage: string | null = null;
 
+  showLoading: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
-    private emailService: EmailService,  // Inject the EmailService
-    private router: Router  // Inject Router for navigation
+    private emailService: EmailService,
+    private router: Router,
+    private formDataService: FormDataService,
+    private loadingService: LoadingService
   ) {
     // Initialize form group with form controls and validators
     this.emailForm = this.formBuilder.group({
@@ -32,15 +38,18 @@ export class ForgotPasswordComponent {
   sendEmail() {
     if (this.emailForm.valid) {
       const emailData = this.emailForm.value;
-      console.log('Sending Email:', emailData);  // This is just for logging
+      this.loadingService.show();
 
+      this.formDataService.saveStepData('forgotPasswordEmail', emailData.recipient);
       // Call the emailService's sendEmail method
       this.emailService.sendEmail(emailData.recipient).subscribe(
         () => {
           // After email is sent, navigate to the ChangePasswordComponent
-          this.router.navigate(['/change_password']);
+          this.loadingService.hide();
+          this.router.navigate(['/forgot/password/pass_code']);
         },
         (error) => {
+          this.loadingService.hide();
           this.errorMessage = 'There was an error sending the email. Please try again.';
         }
       );

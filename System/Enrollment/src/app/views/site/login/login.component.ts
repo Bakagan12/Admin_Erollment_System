@@ -5,10 +5,11 @@ import { FooterComponent } from '../adminPage/admin-dashboard/footer/footer.comp
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { tap } from 'rxjs/operators';
+import { HeaderComponent } from './header/header.component';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FooterComponent, RouterModule],
+  imports: [ReactiveFormsModule, HeaderComponent, CommonModule, FooterComponent, RouterModule],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
@@ -24,8 +25,8 @@ export class LoginComponent {
     });
   }
 
-   // Method to handle login
-   login() {
+  // Method to handle login
+  login() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
       this.authService.login(username, password).subscribe(
@@ -47,6 +48,8 @@ export class LoginComponent {
               this.errorMessage = 'The username you entered is incorrect.';
             } else if (error.error.message === 'Invalid password') {
               this.errorMessage = 'The password you entered is incorrect.';
+            } else if (error.error.message === 'This Role has been InActive') {
+              this.errorMessage = 'This user Roles has been Inactive';
             } else {
               this.errorMessage = 'An unexpected error occurred. Please try again.';
             }

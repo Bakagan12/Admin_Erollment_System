@@ -1,37 +1,38 @@
-import  db from "../../../../config/db";
+import db from "../../../../config/db";
 import { v4 as uuidv4 } from 'uuid';
 import { GenUser } from "../../../../models/genUser";
 import { Persons } from "../../../../models/persons";
+import bcrypt from 'bcrypt';
 
-export class User{
+export class User {
   static async findByUserIdOnAdminPage(userId: number): Promise<any> {
-          return db('gen_users')
-            .leftJoin('gen_user_roles', 'gen_users.id', 'gen_user_roles.gen_user_id')
-            .leftJoin('user_roles', 'user_roles.id', 'gen_user_roles.user_role_id')
-            .leftJoin('persons', 'persons.id', 'gen_users.person_id')
-            .where('gen_users.id', userId)
-            .where('gen_users.is_deleted', 0)
-            .select(
-                'gen_users.*',
-                'persons.*',
-                'user_roles.role_name'
+    return db('gen_users')
+      .leftJoin('gen_user_roles', 'gen_users.id', 'gen_user_roles.gen_user_id')
+      .leftJoin('user_roles', 'user_roles.id', 'gen_user_roles.user_role_id')
+      .leftJoin('persons', 'persons.id', 'gen_users.person_id')
+      .where('gen_users.id', userId)
+      .where('gen_users.is_deleted', 0)
+      .select(
+        'gen_users.*',
+        'persons.*',
+        'user_roles.role_name'
 
-        );
-    }
-    static async findByUserRoleIdOnAdminPage(roleId: number): Promise<any> {
-      return db('gen_user_roles')
-        .leftJoin('gen_users', 'gen_users.id', 'gen_user_roles.gen_user_id')
-        .leftJoin('user_roles', 'user_roles.id', 'gen_user_roles.user_role_id')
-        .leftJoin('persons', 'persons.id', 'gen_users.person_id')
-        .where('gen_user_roles.user_role_id', roleId)
-        .select(
-            'gen_users.*',
-            'persons.*',
-            'user_roles.role_name',
+      );
+  }
+  static async findByUserRoleIdOnAdminPage(roleId: number): Promise<any> {
+    return db('gen_user_roles')
+      .leftJoin('gen_users', 'gen_users.id', 'gen_user_roles.gen_user_id')
+      .leftJoin('user_roles', 'user_roles.id', 'gen_user_roles.user_role_id')
+      .leftJoin('persons', 'persons.id', 'gen_users.person_id')
+      .where('gen_user_roles.user_role_id', roleId)
+      .select(
+        'gen_users.*',
+        'persons.*',
+        'user_roles.role_name',
 
-        );
-    }
-    static async create(user: Persons & GenUser): Promise<any> {
+      );
+  }
+  static async create(user: Persons & GenUser): Promise<any> {
     return await db.transaction(async (trx) => {
       // Generate UUID for new user
       const person = await trx('persons').insert({
@@ -48,16 +49,20 @@ export class User{
         ...(user.address && { address: user.address }),
         ...(user.email && { email: user.email }),
         ...(user.contact_no && { contact_no: user.contact_no }),
-            });
-          const personId = person[0];
-          const savedPerson = await trx('persons').where('id', personId).first();
+      });
+      const personId = person[0];
+      const savedPerson = await trx('persons').where('id', personId).first();
+
+      // Now, generate the username with the first_name, last_name, and personId
+      const username = `${user.first_name.toLowerCase()}${user.last_name.toLowerCase()}${personId}`;
+      const hashedPassword = await bcrypt.hash(user.password, 10);
 
       // Insert into gen_users table
       const userData = await trx('gen_users').insert({
-        person_id:personId,
-        username: user.username,
-        password: user.password,
-        gen_user_email: user.gen_user_email, // optional but useful
+        person_id: personId,
+        username: username,
+        password: hashedPassword,
+        gen_user_email: user.gen_user_email,
         status_id: 1,
         is_deleted: 0
       });
@@ -97,13 +102,13 @@ export class User{
   }
 
   // Update an existing admin user
-  static async update(userId: string, user:GenUser & Persons): Promise<any> {
+  static async update(userId: string, user: GenUser & Persons): Promise<any> {
     if (user.username || user.password) {
       await db('gen_users')
         .where('id', userId)
         .update({
-              username:user.username,
-              password: user.password
+          username: user.username,
+          password: user.password
         });
     }
 
@@ -119,7 +124,7 @@ export class User{
   // Delete an admin user
   static async delete(userId: string): Promise<any> {
     await db('gen_user_roles').where('gen_user_id', userId).update({ is_deleted: 1 });
-    await db('gen_users').where('id', userId).update({is_deleted: 1});
+    await db('gen_users').where('id', userId).update({ is_deleted: 1 });
     return { message: 'User deleted', userId };
   }
 }

@@ -6,7 +6,7 @@ import { AuthService } from '../service/auth/auth.service';
   providedIn: 'root',
 })
 export class RoleGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     // Get the current user's role from the auth service (this should return the numeric user_role_id)

@@ -9,4 +9,5 @@ const emailController_1 = require("../../controllers/emailController/emailContro
 const router = express_1.default.Router();
 // POST route to send email
 router.post('/send', emailController_1.sendTestEmail);
+router.get('/get_username/:email', emailController_1.getUsernameByEmail);
 exports.default = router;

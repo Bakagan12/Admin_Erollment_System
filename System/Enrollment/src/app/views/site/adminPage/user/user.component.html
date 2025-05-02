@@ -1,117 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-</head>
-
 <body class="bg-gray-100 text-gray-900">
   <app-header></app-header>
 
-    <style>
-      .active {
-        background-color: blue;
-        color: white;
-      }
-    </style>
+  <style>
+    .active {
+      background-color: blue;
+      color: white;
+    }
+  </style>
   <app-side-bar>
 
   </app-side-bar>
 
   <!-- Main Content -->
   <div class="ml-64 p-8 pt-16 h-[calc(100vh-8rem)] justify-between overflow-auto">
-    <div class="flex flex-end justify-between items-center mb-8">
+    <div class="flex flex-end justify-between items-center">
       <h1 class="text-2xl font-bold mb-6">Users List</h1>
-      <button (click)="openModal = true" class="bg-blue-500 text-white rounded p-2">Create User</button>
     </div>
-    <!-- <div class="mb-6">
-      <input
-        type="text"
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="filterUsers()"
-        placeholder="Search users..."
-        class="form-control"
-      />
-    </div> -->
+    <div class="flex flex-row justify-between items-end mb-3">
+      <div>
+        <label class="block mb-2 font-medium text-md">Search User Name</label>
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search student name..."
+          class="w-[300px] px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
+      </div>
+      <div class="mb-1"> <!-- align with bottom of input -->
+        <button (click)="openModal = true" class="bg-blue-500 text-white rounded p-2">
+          Create User
+        </button>
+      </div>
+    </div>
+
     <div class="flex flex-col lg:flex-row justify-between w-full">
       <div class="overflow-x-auto w-full">
         <table class="min-w-full bg-white">
           <thead>
             <tr>
+              <th class="py-2 px-4 border-b text-left" (click)="pagination.toggleSortById()"> No. <span
+                  class="ml-1 text-sm text-gray-600 cursor-pointer">
+                  {{ sortByIdAsc ? '▲' : '▼' }}</span></th>
               <th class="py-2 px-4 border-b text-left">First Name</th>
               <th class="py-2 px-4 border-b text-left">M.I</th>
               <th class="py-2 px-4 border-b text-left">Last Name</th>
               <th class="py-2 px-4 border-b text-left">Email</th>
               <th class="py-2 px-4 border-b text-left">Username</th>
-              <th class="py-2 px-4 border-b text-left">Password</th>
               <th class="py-2 px-4 border-b text-left">Role</th>
               <th class="py-2 px-4 border-b text-left">Status</th>
               <th class="py-2 px-4 border-b text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of paginatedUsers">
-              <td class="hidden">{{user.user_id}}</td>
-              <td class="py-2 px-4 border-b truncate ">{{ user.first_name }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.middle_name ? (user.middle_name[0] + '.') : '' }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.last_name }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.gen_user_email }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.username }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.password }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.role_name }}</td>
-              <td class="py-2 px-4 border-b truncate">{{ user.role_status || 'Active' }}</td>
-              <td class="py-2 px-4 border-b truncate flex flex-col justify-center items-center text-center">
-                <button (click)="openEditModal(user)" class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
-                <button (click)="openDeleteModal(user)" class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
+            @for(user of paginatedUsers; track $index){
             <tr>
-              <td colspan="4"></td>
-              <td colspan="5" class="mt-4 flex justify-center space-x-2">
-                <button
-                  (click)="goToPage(currentPage - 1)"
-                  [disabled]="currentPage === 1"
-                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
-                  Previous
-                </button>
-
-                <button
-                  *ngFor="let page of [].constructor(totalPages); let i = index"
-                  (click)="goToPage(i + 1)"
-                  [class.bg-blue-500]="currentPage === i + 1"
-                  [class.text-white]="currentPage === i + 1"
-                  class="px-4 py-2 border rounded hover:bg-blue-400 hover:text-white">
-                  {{ i + 1 }}
-                </button>
-
-                <button
-                  (click)="goToPage(currentPage + 1)"
-                  [disabled]="currentPage === totalPages"
-                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
-                  Next
-                </button>
+              <td class="py-2 px-4 border-b">{{ user.id}}</td>
+              <td class="py-2 px-4 border-b  ">{{ user.first_name }}</td>
+              <td class="py-2 px-4 border-b ">{{ user.middle_name ? (user.middle_name[0] + '.') : '' }}</td>
+              <td class="py-2 px-4 border-b ">{{ user.last_name }}</td>
+              <td class="py-2 px-4 border-b ">{{ user.gen_user_email }}</td>
+              <td class="py-2 px-4 border-b ">{{ user.username }}</td>
+              <td class="py-2 px-4 border-b ">{{ user.role_name }}</td>
+              <td class="py-2 px-4 border-b ">{{ user.role_status || 'Active' }}</td>
+              <td class="py-2 px-4 border-b  flex flex-col justify-center items-center text-center">
+                <button (click)="openEditModal(user)"
+                  class="bg-yellow-500 text-white p-2 rounded w-20 ml-5 mb-2">Edit</button>
+                <button (click)="openDeleteModal(user)"
+                  class="bg-red-500 text-white p-2 ml-5 rounded w-20">Delete</button>
               </td>
             </tr>
-          </tfoot>
+            }
+          </tbody>
         </table>
+        <div class="flex items-center justify-center mt-6 space-x-4">
+          <button class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400" [disabled]="currentPage <= 1"
+            (click)="goToPage(currentPage - 1)">
+            Previous
+          </button>
+
+          <span class="font-medium text-gray-700">Page {{ currentPage }} of {{ totalPages }}</span>
+
+          <button class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400" [disabled]="currentPage >= totalPages"
+            (click)="goToPage(currentPage + 1)">
+            Next
+          </button>
+        </div>
       </div>
     </div>
   </div>
-
-  <app-footer></app-footer>
 
   <!-- Create User Modal -->
   <div *ngIf="openModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
     <div class="relative text-center space-y-6 col-12 bg-blue-100 p-5 w-100 mx-10 mt-10 rounded-lg">
       <!-- Close Button -->
       <button (click)="openModal = false"
-              class="absolute top-0 right-0 mt-2 mr-2 bg-blue-300 hover:opacity-80 rounded-tr-lg rounded-bl-lg text-blue-900 p-2 text-3xl shadow">
+        class="absolute top-0 right-0 mt-2 mr-2 bg-blue-300 hover:opacity-80 rounded-tr-lg rounded-bl-lg text-blue-900 p-2 text-3xl shadow">
         &times;
       </button>
       <h1 class="text-4xl font-semibold">Register</h1>
@@ -125,7 +104,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="flex flex-col">
             <label class="text-lg">First Name</label>
-            <input formControlName="first_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter First Name" />
+            <input formControlName="first_name" type="text" class="border rounded p-2 mt-2"
+              placeholder="Enter First Name" />
             <div *ngIf="first_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ first_nameError }}
             </div>
@@ -133,7 +113,8 @@
 
           <div class="flex flex-col">
             <label class="text-lg">Middle Name</label>
-            <input formControlName="middle_name" type="text" class="border rounded p-2 mt-2" placeholder="Middle Name" />
+            <input formControlName="middle_name" type="text" class="border rounded p-2 mt-2"
+              placeholder="Middle Name" />
             <div *ngIf="middle_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ middle_nameError }}
             </div>
@@ -141,7 +122,8 @@
 
           <div class="flex flex-col">
             <label class="text-lg">Last Name</label>
-            <input formControlName="last_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Last Name" />
+            <input formControlName="last_name" type="text" class="border rounded p-2 mt-2"
+              placeholder="Enter Last Name" />
             <div *ngIf="last_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ last_nameError }}
             </div>
@@ -189,7 +171,8 @@
 
           <div class="flex flex-col">
             <label class="text-lg">Email</label>
-            <input formControlName="gen_user_email" type="email" class="border rounded p-2 mt-2" placeholder="Enter Email"/>
+            <input formControlName="gen_user_email" type="email" class="border rounded p-2 mt-2"
+              placeholder="Enter Email" />
             <div *ngIf="gen_user_emailError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ gen_user_emailError }}
             </div>
@@ -200,7 +183,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div class="flex flex-col">
             <label class="text-lg">Contact Number</label>
-            <input formControlName="contact_number" type="tel" (keypress)="allowNumbersOnly($event)" maxlength="20" class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
+            <input formControlName="contact_number" type="tel" (keypress)="allowNumbersOnly($event)" maxlength="20"
+              class="border rounded p-2 mt-2" placeholder="Enter Contact Number" />
             <div *ngIf="contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ contact_numberError }}
             </div>
@@ -208,7 +192,8 @@
 
           <div class="flex flex-col">
             <label class="text-lg">Emergency Contact Name</label>
-            <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Name" />
+            <input formControlName="emergency_contact_name" type="text" class="border rounded p-2 mt-2"
+              placeholder="Enter Emergency Contact Name" />
             <div *ngIf="emergency_contact_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ emergency_contact_nameError }}
             </div>
@@ -216,7 +201,8 @@
 
           <div class="flex flex-col">
             <label class="text-lg">Emergency Contact Number</label>
-            <input formControlName="emergency_contact_number" type="tel"  (keypress)="allowNumbersOnly($event)" maxlength="20" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
+            <input formControlName="emergency_contact_number" type="tel" (keypress)="allowNumbersOnly($event)"
+              maxlength="20" class="border rounded p-2 mt-2" placeholder="Enter Emergency Contact Number" />
             <div *ngIf="emergency_contact_numberError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ emergency_contact_numberError }}
             </div>
@@ -224,10 +210,22 @@
         </div>
 
         <!-- Row 4 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="flex flex-col">
             <label class="text-lg">Password</label>
-            <input formControlName="password" type="password" class="border rounded p-2 mt-2" placeholder="Enter Password" />
+            <!-- <input formControlName="" type="" class="border rounded p-2 mt-2" -->
+            <!-- placeholder="Enter Password" /> -->
+            <select name="role_name" id="role_name" formControleName="role_name">
+
+            </select>
+            <div *ngIf="role_nameError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ role_nameError }}
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <label class="text-lg">Password</label>
+            <input formControlName="password" type="password" class="border rounded p-2 mt-2"
+              placeholder="Enter Password" />
             <div *ngIf="passwordsError" class="text-red-900 text-sm rounded-sm text-center mt-2">
               {{ passwordsError }}
             </div>
@@ -235,7 +233,11 @@
 
           <div class="flex flex-col">
             <label class="text-lg">Confirm Password</label>
-            <input formControlName="confirm_password" type="password" class="border rounded p-2 mt-2" placeholder="Confirm Password" />
+            <input formControlName="confirm_password" type="password" class="border rounded p-2 mt-2"
+              placeholder="Confirm Password" />
+            <div *ngIf="confirmPasswordsError" class="text-red-900 text-sm rounded-sm text-center mt-2">
+              {{ confirmPasswordsError }}
+            </div>
           </div>
         </div>
 
@@ -259,52 +261,58 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div class="flex flex-col items-center">
             <label for="first_name" class="text-lg">First Name</label>
-            <input type="text" id="first_name" formControlName="first_name" class="border rounded p-2 w-full mt-2" placeholder="Enter First Name">
+            <input type="text" id="first_name" formControlName="first_name" class="border rounded p-2 w-full mt-2"
+              placeholder="Enter First Name">
           </div>
 
           <div class="flex flex-col w-25 items-center">
             <label for="mi" class="text-lg">M.I.</label>
-            <input type="text" id="mi" formControlName="middle_name" class="border rounded p-2 w-full mt-2" placeholder="M.I.">
+            <input type="text" id="mi" formControlName="middle_name" class="border rounded p-2 w-full mt-2"
+              placeholder="M.I.">
           </div>
 
           <div class="flex flex-col items-center">
             <label for="last_name" class="text-lg">Last Name</label>
-            <input type="text" id="last_name" formControlName="last_name" class="border rounded p-2 w-full mt-2" placeholder="Enter Last Name">
+            <input type="text" id="last_name" formControlName="last_name" class="border rounded p-2 w-full mt-2"
+              placeholder="Enter Last Name">
           </div>
 
           <div class="flex flex-col items-center">
             <label for="email" class="text-lg">Email</label>
-            <input type="email" id="email" formControlName="gen_user_email" class="border rounded p-2 w-full mt-2" placeholder="Enter Email">
-            <div
-            class="text-red-500 text-sm mt-1 self-start"
-            *ngIf="userForm.get('gen_user_email')?.touched && userForm.get('gen_user_email')?.invalid"
-          >
-            <span *ngIf="userForm.get('gen_user_email')?.errors?.['required']">
-              Email is required.
-            </span>
-            <span *ngIf="userForm.get('gen_user_email')?.errors?.['email']">
-              Please enter a valid email address.
-            </span>
-          </div>
+            <input type="email" id="email" formControlName="gen_user_email" class="border rounded p-2 w-full mt-2"
+              placeholder="Enter Email">
+            <div class="text-red-500 text-sm mt-1 self-start"
+              *ngIf="userForm.get('gen_user_email')?.touched && userForm.get('gen_user_email')?.invalid">
+              <span *ngIf="userForm.get('gen_user_email')?.errors?.['required']">
+                Email is required.
+              </span>
+              <span *ngIf="userForm.get('gen_user_email')?.errors?.['email']">
+                Please enter a valid email address.
+              </span>
+            </div>
           </div>
 
           <div class="flex flex-col items-center">
             <label for="username" class="text-lg">Username</label>
-            <input type="email" id="username" formControlName="username" class="border rounded p-2 w-full mt-2" placeholder="Enter Username">
+            <input type="email" id="username" formControlName="username" class="border rounded p-2 w-full mt-2"
+              placeholder="Enter Username">
           </div>
 
           <div class="flex flex-col items-center">
             <label for="password" class="text-lg">Password</label>
-            <input type="password" id="password" formControlName="password" class="border rounded p-2 w-full mt-2" placeholder="Enter Password">
+            <input type="password" id="password" formControlName="password" class="border rounded p-2 w-full mt-2"
+              placeholder="Enter Password">
           </div>
           <div class="flex flex-col items-center">
             <label for="confirm_password" class="text-lg">Confirm Password</label>
-            <input type="password" id="confirm_password" formControlName="confirm_password" class="border rounded p-2 w-full mt-2" placeholder="Enter Confirm  Password">
+            <input type="password" id="confirm_password" formControlName="confirm_password"
+              class="border rounded p-2 w-full mt-2" placeholder="Enter Confirm  Password">
           </div>
         </div>
 
         <div class="flex justify-between mt-6">
-          <button type="button" (click)="closeEditModal()" class="bg-red-500 text-white text-xl p-2 rounded w-32">Cancel</button>
+          <button type="button" (click)="closeEditModal()"
+            class="bg-red-500 text-white text-xl p-2 rounded w-32">Cancel</button>
           <button type="submit" class="bg-blue-500 hover:opacity-90 text-white text-xl p-2 rounded w-32">Save</button>
         </div>
       </form>
@@ -325,12 +333,4 @@
     </div>
   </div>
 
-  <script>
-    function logout() {
-      alert('Logging out...');
-      window.location.href = 'login.html';
-    }
-  </script>
 </body>
-
-</html>

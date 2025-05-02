@@ -7,9 +7,12 @@ import { FooterComponent } from '../admin-dashboard/footer/footer.component';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserRoleService } from '../../../../service/role/user-role.service';
 import { AuthService } from '../../../../service/auth/auth.service';
+import { PaginationService } from '../../../../utils/pagination-service.service';
+import { AdminService } from '../../../../service/AdminService/admin.service';
+import { SharedDeclarationsModule } from '../../../../shared_declations/shared.declarations.module';
 
 interface Role {
-  id:number;
+  id: number;
   role_name: string;
   is_active: string;
 }
@@ -17,84 +20,57 @@ interface Role {
 @Component({
   standalone: true,
   selector: 'user-roles',
-  imports: [SideBarComponent, HeaderComponent, FooterComponent, RouterModule, CommonModule, ReactiveFormsModule],
+  imports: [SideBarComponent, SharedDeclarationsModule, HeaderComponent, FooterComponent, RouterModule, CommonModule, ReactiveFormsModule],
   templateUrl: './roles.component.html'
 })
-export class AnnouncementComponent implements OnInit{
+export class AnnouncementComponent implements OnInit {
   isModalOpen: boolean = false; // For Add Modal
   isEditModalOpen: boolean = false; // For Edit Modal
   isDeleteModalOpen: boolean = false; // For Delete Modal
   roleForm: FormGroup;
-  roles: Role[] = [];
-  filteredRoles: Role[] = [];
+  roles: any[] = [];
+  // filteredRoles: Role[] = [];
   isTokenValid: boolean = true;
   selectedRole: Role | null = null;
   selectedRoleToDelete: Role | null = null;
   selectedStatus: string = '1';
 
   //Pagination
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  totalPages: number = 1;
-  paginatedRoles: Role[] = [];
 
-  constructor(private fb: FormBuilder, private role: UserRoleService, private auth: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private role: UserRoleService,
+    private auth: AuthService,
+    public pagination: PaginationService,
+    private adminService: AdminService
+  ) {
     // Initialize the form group
     this.roleForm = this.fb.group({
       roleName: ['', [Validators.required]],  // Role Name is required
       status: ['1', [Validators.required]] // Status is required
     });
   }
-  updatePaginatedRoles(): void {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    this.paginatedRoles = this.roles.slice(start, end);
-  }
 
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.updatePaginatedRoles();
-    }
-  }
-
-  setupPagination(): void {
-    this.totalPages = Math.ceil(this.roles.length / this.itemsPerPage);
-    this.updatePaginatedRoles();
-  }
   ngOnInit(): void {
     const token = this.auth.getToken();
-    if (token) {
-      this.role.getAllRoles().subscribe(
-        (roles: Role[] ) => {
-          this.roles = roles;
-          this.filterRolesByStatus();
-          this.setupPagination();
-          console.log("User Roles", roles);
-        },
-        (error) => {
-          console.error('Error fetching roles:', error);
-          this.isTokenValid = false;
-        }
-      );
-    } else {
-      console.error('No token found. Redirecting to login...');
-      this.isTokenValid = false;
-      // Optionally, redirect to the login page
-      // this.router.navigate(['/auth/login']);
-    }
+    this.loadRoleList();
   }
-// Method to filter roles based on selected status
- filterRolesByStatus(): void {
-    this.filteredRoles = this.roles.filter(role => role.is_active === this.selectedStatus);
-    this.setupPagination();
-  }
+  loadRoleList(): void {
+    this.adminService.getRoleList().subscribe({
+      next: data => {
+        this.roles = data;
+        console.log('asczcpajspd', this.roles);
+      },
+      error: err => {
 
-// Method to handle status change and update the view
-onStatusChange(event: Event) {
-  const selectElement = event.target as HTMLSelectElement;
-  this.selectedStatus = selectElement.value;
-}
+      }
+    });
+  }
+  // Method to handle status change and update the view
+  onStatusChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectedStatus = selectElement.value;
+  }
   openModal(): void {
     this.isModalOpen = true;
   }
@@ -111,7 +87,7 @@ onStatusChange(event: Event) {
         is_active: this.roleForm.value.status
       };
 
-      this.role.createRole(roleData).subscribe(
+      this.adminService.createRole(roleData).subscribe(
         (response) => {
           console.log('Role created:', response);
 
@@ -121,20 +97,20 @@ onStatusChange(event: Event) {
             role_name: response.data.role_name,
             is_active: response.data.is_active
           };
-          if(newRole.is_active === 1){
-             // Add the newly created role to the roles array
-             this.roles.push(newRole);
+          if (newRole.is_active === 1) {
+            // Add the newly created role to the roles array
+            this.roles.push(newRole);
 
-             // Automatically display the new role without page refresh
-             this.roles = [...this.roles];
+            // Automatically display the new role without page refresh
+            this.roles = [...this.roles];
 
 
-             setTimeout(() => {
-               document.querySelector(`#role-${newRole.id}`)?.scrollIntoView({ behavior: 'smooth' });
-             }, 200);
+            setTimeout(() => {
+              document.querySelector(`#role-${newRole.id}`)?.scrollIntoView({ behavior: 'smooth' });
+            }, 200);
           }
-      // Close the modal after saving
-      this.closeModal();
+          // Close the modal after saving
+          this.closeModal();
 
 
         },
@@ -154,7 +130,7 @@ onStatusChange(event: Event) {
       };
       // console.log(updatedRoleData);
 
-      this.role.updateRole(this.selectedRole.id.toString(), updatedRoleData).subscribe(
+      this.adminService.updateRole(this.selectedRole.id, updatedRoleData).subscribe(
         (response) => {
           const updatedRole = {
             id: response.updatedRole.id,
@@ -199,7 +175,7 @@ onStatusChange(event: Event) {
   // Method to delete the role
   deleteRole(): void {
     if (this.selectedRoleToDelete) {
-      this.role.deleteRole(this.selectedRoleToDelete.id).subscribe(
+      this.adminService.deleteRole(this.selectedRoleToDelete.id).subscribe(
         (response) => {
           console.log('Role deleted:', response);
 
@@ -220,11 +196,22 @@ onStatusChange(event: Event) {
   // Method to open Edit Modal and populate the form with the role data
   openEditModal(role: Role): void {
     this.selectedRole = role;
+    // console.log(this.selectedRole);
     this.roleForm.setValue({
       roleName: role.role_name,
       status: role.is_active
     });
     this.isEditModalOpen = true;
+  }
+  savedEdit(selectRoleById: any): void {
+    const role_id = selectRoleById.id;
+    const role = [selectRoleById.is_active, selectRoleById.role_name];
+    console.log('ascxcm  role:', role_id, role);
+    this.adminService.updateRole(role_id, role).subscribe({
+      next: data => {
+        console.log(data);
+      }
+    });
   }
 
   // Method to close Edit Modal
@@ -232,5 +219,81 @@ onStatusChange(event: Event) {
     this.isEditModalOpen = false;
     this.selectedRole = null;  // Clear selected role when closing
   }
+  // ===========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Pagination Section <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<===========================
+  //for Search and pagination
+  sortColumn: string = 'id';
+  // sortByIdAsc: boolean = true;
+  sortAscending: boolean = true;
 
+
+  get searchQuery(): string {
+    return this.pagination.searchQuery;
+  }
+  set searchQuery(value: string) {
+    this.pagination.setSearchQuery(value);
+  }
+
+  get currentPage(): number {
+    return this.pagination.currentPage;
+  }
+
+  get itemsPerPage(): number {
+    return this.pagination.itemsPerPage;
+  }
+
+  //Pagination Users
+  get totalPages(): number {
+    return Math.ceil(this.filteredRoles.length / this.itemsPerPage);
+  }
+  get sortByIdAsc(): boolean {
+    return this.pagination.sortByIdAsc;
+  }
+  get filteredRoles() {
+    let result = this.roles;
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase();
+      result = result.filter(role => {
+        const fullName = `${role.role_name}`.toLowerCase();
+        return fullName.includes(query);
+      });
+    }
+    return result.sort((a, b) => {
+      if (this.sortByIdAsc) {
+        return a.id - b.id;
+      } else {
+        return b.id - a.id;
+      }
+    });
+  }
+
+  get paginatedRoles() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredRoles.slice(start, start + this.itemsPerPage);
+  }
+
+
+  // pages
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.pagination.setCurrentPage(page);
+    }
+  }
+  toggleSortByStudentName() {
+    this.updateSort('student_name');
+  }
+
+  toggleSortByGradeLevel() {
+    this.updateSort('grade_level');
+  }
+  toggleSortByStatus() {
+    this.updateSort('status');
+  }
+  updateSort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortAscending = !this.sortAscending;
+    } else {
+      this.sortColumn = column;
+      this.sortAscending = true;
+    }
+  }
 }

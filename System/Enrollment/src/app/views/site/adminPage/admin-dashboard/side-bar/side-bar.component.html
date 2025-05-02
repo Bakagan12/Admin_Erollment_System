@@ -1,7 +1,5 @@
 <!-- Main Content -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <div class="flex flex-1 mt-16">
 
   <!-- Sidebar -->
@@ -12,23 +10,30 @@
     <h2 class="text-center font-semibold text-lg mt-4 mb-4">Administration</h2>
     <ul>
       <li class="mb-3">
-        <a [routerLink]="['/admin/dashboard']" class="flex items-center p-2 hover:bg-blue-700 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard'}">
+        <a [routerLink]="['/admin/dashboard']" class="flex items-center p-2 hover:bg-blue-700 text-black rounded"
+          [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard'}">
           <i class="text-2xl fas fa-table-columns mr-4"></i> Dashboard
         </a>
       </li>
-      <li class="mb-3">
-        <a [routerLink]="['/admin/dashboard/user/role']" class="flex items-center hover:bg-blue-700 p-2 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard/user/role'}">
-          <i class="text-2xl mr-2 fa-solid fa-users"></i>Users
+      <li class="">
+        <a [routerLink]="['/admin/dashboard/user/role']"
+          class="flex items-center hover:bg-blue-700 p-2 text-black rounded"
+          [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard/user/role'}">
+          <i class="text-2xl ml-2 mr-2 fa-solid fa-users"></i>Users
         </a>
       </li>
       <li class="mb-3">
-        <a [routerLink]="['/admin/dashboard/announcements']" class="flex items-center hover:bg-blue-700  p-2 text-black rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard/announcements'}">
+        <a [routerLink]="['/admin/dashboard/announcements']"
+          class="flex items-center hover:bg-blue-700  p-2 text-black rounded"
+          [ngClass]="{'bg-blue-700 text-white': activeLink === '/admin/dashboard/announcements'}">
           <i class="text-2xl fa fa-user-tie mr-4" aria-hidden="true"></i>Roles
         </a>
       </li>
       <li class="mb-3">
-        <a class="flex items-center p-2 text-black hover:bg-blue-700  rounded" [ngClass]="{'bg-blue-700 text-white': activeLink === 'logout'}">
-          <i class="text-2xl mr-2 fa-solid fa-arrow-left"></i><button class="text-black py-2 px-2 rounded" (click)="logout()">
+        <a class="flex items-center p-2 text-black hover:bg-blue-700  rounded"
+          [ngClass]="{'bg-blue-700 text-white': activeLink === 'logout'}">
+          <i class="text-2xl mr-2 fa-solid fa-arrow-left"></i><button class="text-black py-2 px-2 rounded"
+            (click)="logout()">
             Logout
           </button>
         </a>

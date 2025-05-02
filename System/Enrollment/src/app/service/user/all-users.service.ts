@@ -9,8 +9,8 @@ import { AuthService } from '../auth/auth.service';
 })
 export class AllUsersService {
 
-  private apiUrl = environment.apiUrl + '/all_user/get_all_user';
-  private createUserUrl = environment.apiUrl + '/all_user/user/create';
+  private apiUrl = environment.apiUrl + '/get_all/users';
+  private createUserUrl = environment.apiUrl + '/get_all/user/create';
   private updateUserUrl = environment.apiUrl + '/all_user/user/update';
   private deleteUserUrl = environment.apiUrl + '/all_user/user/delete';
 

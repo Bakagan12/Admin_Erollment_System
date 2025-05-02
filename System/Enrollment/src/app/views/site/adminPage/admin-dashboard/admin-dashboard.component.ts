@@ -6,8 +6,9 @@ import { FooterComponent } from './footer/footer.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { UserRoleService } from '../../../../service/role/user-role.service';
 import { AuthService } from '../../../../service/auth/auth.service';
-import {AllStudentService} from '../../../../service/student/all-student.service';
-import {AllUsersService} from '../../../../service/user/all-users.service';
+import { AllStudentService } from '../../../../service/student/all-student.service';
+import { AllUsersService } from '../../../../service/user/all-users.service';
+import { AdminService } from '../../../../service/AdminService/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -25,17 +26,18 @@ export class AdminDashboardComponent implements OnInit {
     private userRoleService: UserRoleService,
     private auth: AuthService,
     private AllStudentService: AllStudentService,
-    private AllUsersService: AllUsersService
-  ) {}
+    private AllUsersService: AllUsersService,
+    private adminService: AdminService
+  ) { }
 
   ngOnInit(): void {
     const token = this.auth.getToken(); // Get the token here
 
     if (token) {
       // If token exists, proceed to fetch roles
-      this.userRoleService.getAllRoles().subscribe(
+      this.adminService.getRoleList().subscribe(
         (roles) => {
-          console.log('Roles fetched:', roles);
+          // console.log('Roles fetched:', roles);
           this.totalRoles = roles.length;
         },
         (error) => {
@@ -43,18 +45,19 @@ export class AdminDashboardComponent implements OnInit {
           this.isTokenValid = false;
         }
       );
-      this.AllStudentService.getAllStudents().subscribe(
+      this.adminService.getAllStudents().subscribe(
         (students) => {
-          console.log('Roles fetched:', students);
+          // console.log('Students fetched:', students);
           this.totalStudents = students.length;
         },
         (error) => {
           this.isTokenValid = false;
         }
       );
-      this.AllUsersService.getAllUsers().subscribe(
+      this.adminService.getOverAllUsers().subscribe(
         (users) => {
-          this.totalUsers = users.length;
+          this.totalUsers = users.data.length;
+          // console.log('USERS: ', users);
 
         },
         (error) => {
